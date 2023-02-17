@@ -19,6 +19,13 @@ class U_Step:
         self.left = H.T @ H + (alpha / gamma) * (Dx.T @ Dx + Dy.T @ Dy)
         self.HT_g = H.T @ g
 
+        # calc v vectorize function
+        self.vfunc = np.vectorize(calc_v)
+
     def step(self) -> np.ndarray:        
         right = self.HT_g + (self.alpha / self.gamma) * (self.Dx.T @ (self.vx + self.ax) + self.Dy.T @ (self.vy + self.ay))
         u = linalg.inv(self.left) @ right
+
+
+def calc_v(s, arr):
+    pass
