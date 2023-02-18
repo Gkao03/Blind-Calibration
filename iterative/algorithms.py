@@ -26,6 +26,11 @@ class U_Step:
         right = self.HT_g + (self.alpha / self.gamma) * (self.Dx.T @ (self.vx + self.ax) + self.Dy.T @ (self.vy + self.ay))
         u = linalg.inv(self.left) @ right
 
+        s = np.sqrt(np.square(self.Dx @ u - self.ax) + np.square(self.Dy @ u - self.ay))
+        self.vx = self.vfunc(s, self.Dx @ u - self.ax)
+        self.vy = self.vfunc(s, self.Dy @ u - self.ay)
 
-def calc_v(s, arr):
-    pass
+
+def calc_v(s, arr, alpha):
+    scalar = (1 / s) * max(s - (1 / alpha), 0)
+    return scalar * arr
