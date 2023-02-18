@@ -22,13 +22,21 @@ class U_Step:
         # calc v vectorize function
         self.vfunc = np.vectorize(calc_v)
 
-    def step(self) -> np.ndarray:        
+    def step(self) -> np.ndarray:
+        # calc u
         right = self.HT_g + (self.alpha / self.gamma) * (self.Dx.T @ (self.vx + self.ax) + self.Dy.T @ (self.vy + self.ay))
         u = linalg.inv(self.left) @ right
 
+        # calc v
         s = np.sqrt(np.square(self.Dx @ u - self.ax) + np.square(self.Dy @ u - self.ay))
         self.vx = self.vfunc(s, self.Dx @ u - self.ax)
         self.vy = self.vfunc(s, self.Dy @ u - self.ay)
+
+        # calc a
+        self.ax = self.ax - self.Dx @ u + self.vx
+        self.ay = self.ay - self.Dy @ u + self.vy
+
+        return u
 
 
 def calc_v(s, arr, alpha):
