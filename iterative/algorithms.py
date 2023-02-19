@@ -42,3 +42,42 @@ class U_Step:
 def calc_v(s, arr, alpha):
     scalar = (1 / s) * max(s - (1 / alpha), 0)
     return scalar * arr
+
+
+class H_step:
+    def __init__(self, g: np.ndarray, U: np.ndarray, R_delta: np.ndarray, beta: float, delta: float, gamma: float, K: int, L: int):
+        self.g = g
+        self.U = U
+        self.beta = beta
+        self.delta = delta
+        self.gamma = gamma
+        self.K = K
+        self.L = L
+
+        # variables
+        self.w = np.zeros(K * L)
+        self.b = np.zeros(K * L)
+
+        # calculations
+        self.left = U.T @ U + (delta / gamma) * R_delta + (beta / gamma) * np.eye(K * L)
+        self.UT_g = U.T @ g
+
+        # vectorize function
+        self.wfunc = np.vectorize(calc_w)
+
+    def step(self, u: np.ndarray) -> np.ndarray:
+        # calc h
+        right = self.UT_g + (self.beta / self.gamma) * (self.w + self.b)
+        h = linalg.inv(self.left) @ right
+
+        # calc w
+        self.w = self.wfunc(h - self.b, self.beta)
+
+        # calc b
+        self.b = self.b - h + self.w
+
+        return h
+
+
+def calc_w(arr, beta):
+    return max(arr - (1 / beta), 0)
