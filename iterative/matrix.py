@@ -1,3 +1,5 @@
+# This file contains some matrix utility functions
+
 import scipy.linalg as linalg
 import numpy as np
 
