@@ -1,4 +1,5 @@
 import scipy.linalg as linalg
+from scipy import signal
 import numpy as np
 
 
@@ -16,9 +17,13 @@ def create_toeplitz(matrix, kernel):
     pad_kernel = np.pad(kernel, ((max(out_height - kernel_height, 0), 0), (0, max(out_width - kernel_width, 0))), 'constant')
     return pad_kernel
 
+def convolve(matrix, kernel, mode='valid'):
+    return signal.convolve2d(matrix, kernel, mode=mode)
+
 
 if __name__ == '__main__':
     I = np.arange(16).reshape((4, 4))
     F = np.array([[10, 20], [30, 40]])
 
     print(create_toeplitz(I, F))
+    print(convolve(I, F))
