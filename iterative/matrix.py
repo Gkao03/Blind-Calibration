@@ -12,7 +12,7 @@ def conv_matrix(v, n, mode='valid'):
         mode (str, optional): "full", "same", or "valid". Defaults to 'valid'.
 
     Returns:
-        np.ndarray: A convolution matrix
+        np.ndarray: A convolution matrix. matrix @ v = conv(v, vector of length n)
     """
     X = linalg.convolution_matrix(v, n, mode=mode)
     return X
