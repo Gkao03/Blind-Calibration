@@ -64,7 +64,7 @@ def create_toeplitz(matrix, kernel):
 def matrix_to_vector(input):
     input_h , input_w = input.shape
     output_vector = np.zeros(input_h * input_w, dtype=input.dtype)
-    
+
     # flip ud
     input = np.flipud(input)
     for i, row in enumerate(input):
@@ -72,6 +72,38 @@ def matrix_to_vector(input):
         nd = st + input_w
         output_vector[st:nd] = row
     return output_vector
+
+
+def kernel_to_matrix(kernel, mode='Toeplitz'):
+    # Get the dimensions of the kernel
+    k_rows, k_cols = kernel.shape
+
+    if mode == 'Toeplitz':
+        # Create a Toeplitz matrix from the kernel
+        first_col = np.concatenate((kernel[:, 0], np.zeros(k_rows - 1)))
+        first_row = np.concatenate((kernel[0, :], np.zeros(k_cols - 1)))
+        toeplitz_matrix = np.zeros((k_rows * k_cols, k_rows * k_cols))
+        for i in range(k_rows):
+            for j in range(k_cols):
+                index = i * k_cols + j
+                row = (j * k_rows) + i
+                toeplitz_matrix[index, :] = np.roll(first_row, j * k_rows)[::-1]
+                toeplitz_matrix[index, :i] = 0
+                toeplitz_matrix[index, i:k_rows] = np.roll(first_col, k_rows - i - 1)[k_rows - i - 1:]
+        return toeplitz_matrix
+    elif mode == 'Circulant':
+        # Create a Circulant matrix from the kernel
+        kernel_flip = np.flip(kernel)
+        circulant_matrix = np.zeros((k_rows * k_cols, k_rows * k_cols))
+        for i in range(k_rows):
+            for j in range(k_cols):
+                index = i * k_cols + j
+                row = np.roll(kernel_flip, i, axis=0)
+                col = np.roll(kernel_flip, j, axis=1)
+                circulant_matrix[index, :] = row.flatten() @ col.flatten()
+        return circulant_matrix
+    else:
+        raise ValueError('Invalid mode argument. Supported modes: Toeplitz, Circulant')
 
 
 def convolve(matrix, kernel, mode='valid'):
@@ -82,5 +114,16 @@ if __name__ == '__main__':
     I = np.arange(16).reshape((4, 4))
     F = np.array([[10, 20], [30, 40]])
 
-    create_toeplitz(I, F)
+    # create_toeplitz(I, F)
+    kernel = np.array([[1, 2], [3, 4]])
+    input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
+    circulant_matrix = kernel_to_matrix(kernel, mode='Circulant')
+    input_flat = input_matrix.flatten()
+    output_conv = np.convolve(input_flat, kernel.flatten(), mode='valid')
+    output_toeplitz = toeplitz_matrix @ input_flat
+    output_circulant = circulant_matrix @ input_flat
+    print(output_conv.reshape((2, 2)))
+    print(output_toeplitz.reshape((2, 2)))
+    print(output_circulant.reshape((2, 2)))
     print(convolve(I, F))
