@@ -1,3 +1,5 @@
+# This file is for self testing purposes only. Not meant to be used in implementation.
+
 import scipy.linalg as linalg
 from scipy import signal
 import numpy as np
@@ -24,7 +26,19 @@ def create_toeplitz(inp, kernel):
         toep_mat = linalg.toeplitz(c, row)
         toeplitz_matrices.append(toep_mat)
 
-    print(toeplitz_matrices)
+    # create new matrix from toeplitz matrices
+    num_block_rows = out_size // toeplitz_matrices[0].shape[0]
+    blocks = []
+    i = len(toeplitz_matrices)
+
+    for _ in range(num_block_rows):
+        block_row = toeplitz_matrices[i:] + toeplitz_matrices[:i]
+        blocks.append(block_row)
+        i -= 1
+
+    result_mat = np.block(blocks)
+    return result_mat
+
 
 def matrix_to_vector(input):
     input_h , input_w = input.shape
@@ -77,9 +91,11 @@ def convolve(matrix, kernel, mode='valid'):
 
 if __name__ == '__main__':
     I = np.arange(16).reshape((4, 4))
-    F = np.array([[10, 20], [30, 40]])
+    F = np.array([[10, 20], [30, 40], [50, 60]])
+    # F = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
 
-    create_toeplitz(I, F)
+    res = create_toeplitz(I, F)
+    
     # kernel = np.array([[1, 2], [3, 4]])
     # input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     # toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
