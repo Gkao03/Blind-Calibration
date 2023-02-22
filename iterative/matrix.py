@@ -6,7 +6,8 @@ from scipy import signal
 import numpy as np
 
 def conv_matrix(v, n, mode='valid'):
-    """Generates a convolution matrix
+    """creates a Toeplitz matrix A such that A @ v is equivalent to using convolve(a, v, mode). 
+    The returned array always has n columns. The number of rows depends on the specified mode
 
     Args:
         v (np.ndarray): vector input
