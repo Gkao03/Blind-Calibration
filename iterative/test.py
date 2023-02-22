@@ -1,6 +1,7 @@
 # This file is for self testing purposes only. Not meant to be used in implementation.
 
 import scipy.linalg as linalg
+from scipy.sparse import csr_matrix
 from scipy import signal
 import numpy as np
 
