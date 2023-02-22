@@ -11,11 +11,27 @@ def create_toeplitz(matrix, kernel):
     out_height = in_height - kernel_height + 1
     out_width = in_width - kernel_width + 1
 
-    print(kernel.shape)
-    print(out_height, out_width)
-
+    # zero pad kernel (to size of 'valid' output)
     pad_kernel = np.pad(kernel, ((max(out_height - kernel_height, 0), 0), (0, max(out_width - kernel_width, 0))), 'constant')
-    return pad_kernel
+    # print(pad_kernel)
+
+    # create toeplitz matrix for each row of kernel
+    # toeplitz_mats = [linalg.toeplitz(row) for row in pad_kernel]
+    # for row in toeplitz_mats:
+    #     print(row)
+
+    # create circulant matrix for each row in kernel
+    circ_mats = [linalg.circulant(row) for row in np.flip(pad_kernel, axis=0)]
+    blocks = []
+
+    # create block matrix
+    for i in range(len(circ_mats)):
+        row = circ_mats[:i+1][::-1] + circ_mats[i+1:][::-1]
+        blocks.append(row)
+
+    doubly_circulant_mat = np.block(blocks)
+    print(doubly_circulant_mat)
+
 
 def convolve(matrix, kernel, mode='valid'):
     return signal.convolve2d(matrix, kernel, mode=mode)
