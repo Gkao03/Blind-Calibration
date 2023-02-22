@@ -98,16 +98,3 @@ if __name__ == '__main__':
 
     res_convolve = convolve(I, np.flip(F))
     print(res_convolve)
-
-    # kernel = np.array([[1, 2], [3, 4]])
-    # input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    # toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
-    # circulant_matrix = kernel_to_matrix(kernel, mode='Circulant')
-    # input_flat = input_matrix.flatten()
-    # output_conv = np.convolve(input_flat, kernel.flatten(), mode='valid')
-    # output_toeplitz = toeplitz_matrix @ input_flat
-    # output_circulant = circulant_matrix @ input_flat
-    # print(output_conv.reshape((2, 2)))
-    # print(output_toeplitz.reshape((2, 2)))
-    # print(output_circulant.reshape((2, 2)))
-    # print(convolve(I, F))
