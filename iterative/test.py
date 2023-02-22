@@ -1,7 +1,7 @@
 # This file is for self testing purposes only. Not meant to be used in implementation.
 
 import scipy.linalg as linalg
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, bmat
 from scipy import signal
 import numpy as np
 
@@ -23,7 +23,7 @@ def create_toeplitz(inp, kernel):
 
     for row in pad_kernel:
         c = np.r_[row[0], [0] * (out_width - 1)]
-        toep_mat = linalg.toeplitz(c, row)
+        toep_mat = csr_matrix(linalg.toeplitz(c, row))
         toeplitz_matrices.append(toep_mat)
 
     # create new matrix from toeplitz matrices
@@ -36,7 +36,7 @@ def create_toeplitz(inp, kernel):
         blocks.append(block_row)
         i -= 1
 
-    result_mat = np.block(blocks)
+    result_mat = bmat(blocks)
     return result_mat
 
 
