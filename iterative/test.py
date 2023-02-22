@@ -64,7 +64,8 @@ def create_toeplitz(matrix, kernel):
 def matrix_to_vector(input):
     input_h , input_w = input.shape
     output_vector = np.zeros(input_h * input_w, dtype=input.dtype)
-    # f l i p t h e i n p u t m a t r i x up down
+    
+    # flip ud
     input = np.flipud(input)
     for i, row in enumerate(input):
         st = i * input_w
