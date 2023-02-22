@@ -3,63 +3,28 @@ from scipy import signal
 import numpy as np
 
 
-def create_toeplitz(matrix, kernel):
+def create_toeplitz(inp, kernel):
     """Creates toeplitz matrix representing 'valid' convolution of matrix with kernel"""
-    in_height, in_width = matrix.shape
+    in_height, in_width = inp.shape
     kernel_height, kernel_width = kernel.shape
 
     out_height = in_height - kernel_height + 1
     out_width = in_width - kernel_width + 1
+    out_size = out_height * out_width
 
-    # zero pad kernel (to size of 'valid' output)
-    pad_kernel = np.pad(kernel, ((max(out_height - kernel_height, 0), 0), (0, max(out_width - kernel_width, 0))), 'constant')
+    # zero pad kernel
+    pad_kernel = np.pad(kernel, [(0, in_height - kernel_height), (0, out_width - 1)])
     print(pad_kernel)
 
-    toeplitz_list = []
-    # iterate from last row to first row
-    for i in range(pad_kernel.shape[0] - 1, -1, -1):
-        c = pad_kernel[i, :] # copy i'th row
-        r = np.r_[c[0], np.zeros(in_width - 1)]
-        # toeplitz function in scipy
-        toeplitz_m = linalg.toeplitz(c, r)
-        toeplitz_list.append(toeplitz_m)
-        print('F '+ str(i)+'\n', toeplitz_m)
+    # create toeplitz matrix for each row of padded kernel
+    toeplitz_matrices = []
 
-    c = range(1, pad_kernel.shape[0] + 1)
-    r = np.r_[c[0], np.zeros(in_width - 1, dtype=int)]
-    doubly_indices = linalg.toeplitz(c, r)
-    print('doubly indices \n', doubly_indices)
+    for row in pad_kernel:
+        c = np.r_[row[0], [0] * (out_width - 1)]
+        toep_mat = linalg.toeplitz(c, row)
+        toeplitz_matrices.append(toep_mat)
 
-    # shape of one of those toeplitz matrices
-    h = toeplitz_list[0].shape[0] * doubly_indices.shape[0]
-    w = toeplitz_list[0].shape[1] * doubly_indices.shape[1]
-    doubly_blocked_shape = [h, w]
-    doubly_blocked = np.zeros(doubly_blocked_shape)
-
-    # tile the toeplitz matrices
-    b_h , b_w = toeplitz_list[0].shape # height and width of each block
-    for i in range(doubly_indices.shape[0]):
-        for j in range(doubly_indices.shape[1]):
-            start_i = i * b_h
-            start_j = j * b_w
-            end_i = start_i + b_h
-            end_j = start_j + b_w
-            doubly_blocked[start_i:end_i, start_j:end_j] = toeplitz_list[doubly_indices[i, j] - 1]
-
-    print(doubly_blocked @ matrix_to_vector(matrix))
-    return doubly_blocked
-
-    # create circulant matrix for each row in kernel
-    # circ_mats = [linalg.circulant(row) for row in np.flip(pad_kernel, axis=0)]
-    # blocks = []
-
-    # # create block matrix
-    # for i in range(len(circ_mats)):
-    #     row = circ_mats[:i+1][::-1] + circ_mats[i+1:][::-1]
-    #     blocks.append(row)
-
-    # doubly_circulant_mat = np.block(blocks)
-    # print(doubly_circulant_mat)
+    print(toeplitz_matrices)
 
 def matrix_to_vector(input):
     input_h , input_w = input.shape
@@ -114,16 +79,16 @@ if __name__ == '__main__':
     I = np.arange(16).reshape((4, 4))
     F = np.array([[10, 20], [30, 40]])
 
-    # create_toeplitz(I, F)
-    kernel = np.array([[1, 2], [3, 4]])
-    input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
-    circulant_matrix = kernel_to_matrix(kernel, mode='Circulant')
-    input_flat = input_matrix.flatten()
-    output_conv = np.convolve(input_flat, kernel.flatten(), mode='valid')
-    output_toeplitz = toeplitz_matrix @ input_flat
-    output_circulant = circulant_matrix @ input_flat
-    print(output_conv.reshape((2, 2)))
-    print(output_toeplitz.reshape((2, 2)))
-    print(output_circulant.reshape((2, 2)))
-    print(convolve(I, F))
+    create_toeplitz(I, F)
+    # kernel = np.array([[1, 2], [3, 4]])
+    # input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
+    # circulant_matrix = kernel_to_matrix(kernel, mode='Circulant')
+    # input_flat = input_matrix.flatten()
+    # output_conv = np.convolve(input_flat, kernel.flatten(), mode='valid')
+    # output_toeplitz = toeplitz_matrix @ input_flat
+    # output_circulant = circulant_matrix @ input_flat
+    # print(output_conv.reshape((2, 2)))
+    # print(output_toeplitz.reshape((2, 2)))
+    # print(output_circulant.reshape((2, 2)))
+    # print(convolve(I, F))
