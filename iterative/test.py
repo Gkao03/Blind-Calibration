@@ -16,7 +16,6 @@ def create_toeplitz(inp, kernel):
 
     # zero pad kernel
     pad_kernel = np.pad(kernel, [(0, in_height - kernel_height), (0, out_width - 1)])
-    print(pad_kernel)
 
     # create toeplitz matrix for each row of padded kernel
     toeplitz_matrices = []
@@ -38,6 +37,16 @@ def create_toeplitz(inp, kernel):
 
     result_mat = np.block(blocks)
     return result_mat
+
+
+def convolve_by_matmult(matrix, inp, kernel_shape):
+    inp_shape = inp.shape
+    out_height = inp_shape[0] - kernel_shape[0] + 1
+    out_width = inp_shape[1] - kernel_shape[1] + 1
+
+    result_flat = matrix @ inp.flatten()
+    result = result_flat.reshape((out_height, out_width))
+    return result
 
 
 def matrix_to_vector(input):
@@ -90,12 +99,19 @@ def convolve(matrix, kernel, mode='valid'):
 
 
 if __name__ == '__main__':
-    I = np.arange(16).reshape((4, 4))
-    F = np.array([[10, 20], [30, 40], [50, 60]])
-    # F = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+    I = np.arange(256 * 256).reshape((256, 256))
+    # F = np.array([[10, 20], [30, 40]])
+    F = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+    # F = np.random.randint(0, 100, (4, 4))
 
     res = create_toeplitz(I, F)
-    
+    print(res.shape)
+    res_matmult = convolve_by_matmult(res, I, F.shape)
+    print(res_matmult)
+
+    res_convolve = convolve(I, np.flip(F))
+    print(res_convolve)
+
     # kernel = np.array([[1, 2], [3, 4]])
     # input_matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     # toeplitz_matrix = kernel_to_matrix(kernel, mode='Toeplitz')
