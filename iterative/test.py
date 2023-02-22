@@ -48,20 +48,6 @@ def convolve_by_matmult(matrix, inp, kernel_shape):
     result = result_flat.reshape((out_height, out_width))
     return result
 
-
-def matrix_to_vector(input):
-    input_h , input_w = input.shape
-    output_vector = np.zeros(input_h * input_w, dtype=input.dtype)
-
-    # flip ud
-    input = np.flipud(input)
-    for i, row in enumerate(input):
-        st = i * input_w
-        nd = st + input_w
-        output_vector[st:nd] = row
-    return output_vector
-
-
 def kernel_to_matrix(kernel, mode='Toeplitz'):
     # Get the dimensions of the kernel
     k_rows, k_cols = kernel.shape
