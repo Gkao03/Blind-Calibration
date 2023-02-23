@@ -24,6 +24,7 @@ def create_toeplitz(inp, kernel):
         result_mat = np.vstack(arrs)
         return result_mat
 
+    # input larger than kernel
     out_height = in_height - kernel_height + 1
     out_width = in_width - kernel_width + 1
     out_size = out_height * out_width
