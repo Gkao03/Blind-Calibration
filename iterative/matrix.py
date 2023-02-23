@@ -5,7 +5,7 @@ from scipy.sparse import csr_matrix, bmat
 from scipy import signal
 import numpy as np
 
-def creates_toeplitz1D(v, n, mode='valid'):
+def create_toeplitz1D(v, n, mode='valid'):
     """creates a Toeplitz matrix A such that A @ v is equivalent to using convolve(a, v, mode). 
     The returned array always has n columns. The number of rows depends on the specified mode.
     This function applies for 1D vectors only.    
