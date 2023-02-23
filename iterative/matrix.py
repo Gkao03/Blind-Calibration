@@ -7,7 +7,8 @@ import numpy as np
 
 def conv_matrix(v, n, mode='valid'):
     """creates a Toeplitz matrix A such that A @ v is equivalent to using convolve(a, v, mode). 
-    The returned array always has n columns. The number of rows depends on the specified mode
+    The returned array always has n columns. The number of rows depends on the specified mode.
+    This function applies for 1D vectors only.    
 
     Args:
         v (np.ndarray): vector input
@@ -22,7 +23,7 @@ def conv_matrix(v, n, mode='valid'):
 
 
 def create_toeplitz(inp, kernel):
-    """Creates toeplitz matrix representing 'valid' convolution of matrix with kernel"""
+    """Creates toeplitz matrix representing 2D 'valid' convolution of matrix with kernel"""
     in_height, in_width = inp.shape
     kernel_height, kernel_width = kernel.shape
 
