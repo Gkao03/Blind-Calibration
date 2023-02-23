@@ -29,6 +29,20 @@ def create_toeplitz2D(inp, kernel):
     in_height, in_width = inp.shape
     kernel_height, kernel_width = kernel.shape
 
+    # if kernel is larger than input
+    if kernel_height > in_height or kernel_width > in_width:
+        out_height = kernel_height - in_height + 1
+        out_width = kernel_width - in_width + 1
+        arrs = []
+
+        for i in range(out_height):
+            for j in range(out_width):
+                arrs.append(kernel[i:i + in_height, j:j + in_width].flatten())
+
+        result_mat = np.vstack(arrs)
+        return result_mat
+
+    # input larger than kernel
     out_height = in_height - kernel_height + 1
     out_width = in_width - kernel_width + 1
     out_size = out_height * out_width
