@@ -23,7 +23,9 @@ def creates_toeplitz1D(v, n, mode='valid'):
 
 
 def create_toeplitz2D(inp, kernel):
-    """Creates toeplitz matrix representing 2D 'valid' convolution of matrix with kernel"""
+    """Creates toeplitz matrix representing 2D 'valid' convolution of matrix with kernel.
+    Only for kernel size > inp size.
+    """
     in_height, in_width = inp.shape
     kernel_height, kernel_width = kernel.shape
 
