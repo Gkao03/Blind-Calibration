@@ -11,6 +11,19 @@ def create_toeplitz(inp, kernel):
     in_height, in_width = inp.shape
     kernel_height, kernel_width = kernel.shape
 
+    # if kernel is larger than input
+    if kernel_height > in_height or kernel_width > in_width:
+        out_height = kernel_height - in_height + 1
+        out_width = kernel_width - in_width + 1
+        arrs = []
+
+        for i in range(out_height):
+            for j in range(out_width):
+                arrs.append(kernel[i:i + in_height, j:j + in_width].flatten())
+
+        result_mat = np.vstack(arrs)
+        return result_mat
+
     out_height = in_height - kernel_height + 1
     out_width = in_width - kernel_width + 1
     out_size = out_height * out_width
@@ -42,8 +55,8 @@ def create_toeplitz(inp, kernel):
 
 def convolve_by_matmult(matrix, inp, kernel_shape):
     inp_shape = inp.shape
-    out_height = inp_shape[0] - kernel_shape[0] + 1
-    out_width = inp_shape[1] - kernel_shape[1] + 1
+    out_height = max(inp_shape[0], kernel_shape[0]) - min(inp_shape[0], kernel_shape[0]) + 1
+    out_width = max(inp_shape[1], kernel_shape[1]) - min(inp_shape[1], kernel_shape[1]) + 1
 
     result_flat = matrix @ inp.flatten()
     result = result_flat.reshape((out_height, out_width))
@@ -86,14 +99,17 @@ def convolve(matrix, kernel, mode='valid'):
 
 
 if __name__ == '__main__':
-    I = np.arange(256 * 256).reshape((256, 256))
-    # F = np.array([[10, 20], [30, 40]])
-    F = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+    # I = np.arange(256 * 256).reshape((256, 256))
+    I = np.arange(16).reshape(4, 4)
+    F = np.array([[10, 20], [30, 40]])
+    # F = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
     # F = np.random.randint(0, 100, (4, 4))
 
-    res = create_toeplitz(I, F)
+    # res = create_toeplitz(I, F)
+    res = create_toeplitz(F, I)
     print(res.shape)
-    res_matmult = convolve_by_matmult(res, I, F.shape)
+    # res_matmult = convolve_by_matmult(res, I, F.shape)
+    res_matmult = convolve_by_matmult(res, F, I.shape)
     print(res_matmult)
 
     res_convolve = convolve(I, np.flip(F))
