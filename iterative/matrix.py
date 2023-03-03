@@ -5,6 +5,7 @@ from scipy.sparse import csr_matrix, bmat
 from scipy import signal
 import numpy as np
 
+
 def create_toeplitz1D(v, n, mode='valid'):
     """creates a Toeplitz matrix A such that A @ v is equivalent to using convolve(a, v, mode). 
     The returned array always has n columns. The number of rows depends on the specified mode.
@@ -70,3 +71,17 @@ def create_toeplitz2D(inp, kernel):
 
     result_mat = bmat(blocks)
     return result_mat
+
+
+def conv_matrix(image, filter_size):
+    height, width = image.shape
+    conv_matrix = np.zeros((height - filter_size + 1, width - filter_size + 1))
+
+    # Define the filter coefficients
+    filter_coefficients = np.ones((filter_size, filter_size)) / (filter_size ** 2)
+
+    # Compute the convolution matrix
+    for i in range(height - filter_size + 1):
+        for j in range(width - filter_size + 1):
+            image_patch = image[i:i+filter_size, j:j+filter_size]
+            conv_matrix[i, j] = np.sum(np.multiply(image_patch, filter_coefficients))
