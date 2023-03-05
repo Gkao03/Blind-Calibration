@@ -136,12 +136,12 @@ class ALISTA(nn.Module):
         z_prev = z
         for i in range(self.num_layers):
             z = self.layers[i](z_prev)
-            z = z + torch.mm(x - torch.mm(z, self.W.t()) - torch.mm(z_prev - z, self.A), self.W) + torch.mm(z_prev - z, self.c)
+            z = z + torch.matmul(x - torch.matmul(z, self.W.t()) - torch.matmul(z_prev - z, self.A), self.W) + torch.matmul(z_prev - z, self.c)
             z = self.T(z)
             z_prev = z
         
         # Reconstruct the input from the sparse code and dictionary
-        x_recon = torch.mm(z, self.W) + self.b.t()
+        x_recon = torch.matmul(z, self.W) + self.b.t()
         x_recon = x_recon.view(-1, 1, int(math.sqrt(self.input_size)), int(math.sqrt(self.input_size)))
         
         return x_recon
