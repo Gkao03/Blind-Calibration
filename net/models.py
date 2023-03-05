@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -19,9 +20,9 @@ class Decoder(nn.Module):
         pass
 
 
-class LISTANet(nn.Module):
+class LISTA(nn.Module):
     def __init__(self, input_size, dict_size, num_layers):
-        super(LISTANet, self).__init__()
+        super(LISTA, self).__init__()
         self.input_size = input_size
         self.dict_size = dict_size
         self.num_layers = num_layers
@@ -49,3 +50,46 @@ class LISTANet(nn.Module):
             
         # Return the final sparse code
         return z.view(-1, self.dict_size)
+
+
+class AdaptiveLISTA(nn.Module):
+    def __init__(self, input_size, dict_size, num_layers):
+        super(AdaptiveLISTA, self).__init__()
+        
+        self.input_size = input_size
+        self.dict_size = dict_size
+        self.num_layers = num_layers
+        
+        # Initialize the weight matrix W and bias vector b
+        self.W = nn.Parameter(torch.Tensor(dict_size, input_size))
+        self.b = nn.Parameter(torch.Tensor(dict_size, 1))
+        nn.init.kaiming_uniform_(self.W, a=math.sqrt(5))
+        nn.init.zeros_(self.b)
+        
+        # Initialize the thresholding function T
+        self.T = nn.Threshold(0, 0)
+        
+        # Initialize the ALISTA layers
+        self.layers = nn.ModuleList()
+        for i in range(num_layers):
+            self.layers.append(nn.Linear(dict_size, dict_size))
+        
+    def forward(self, x):
+        # Flatten the input tensor
+        x = x.view(-1, self.input_size)
+        
+        # Compute the sparse code using the ALISTA algorithm
+        z = torch.zeros(x.shape[0], self.dict_size).to(x.device)
+        z_prev = z
+        alpha = 1.0 / torch.norm(self.W, p=2)
+        for i in range(self.num_layers):
+            z = self.layers[i](z_prev)
+            z = z + torch.mm(x - torch.mm(z, self.W.t()), self.W) * alpha
+            z = self.T(z)
+            z_prev = z
+        
+        # Reconstruct the input from the sparse code and dictionary
+        x_recon = torch.mm(z, self.W) + self.b.t()
+        x_recon = x_recon.view(-1, 1, int(math.sqrt(self.input_size)), int(math.sqrt(self.input_size)))
+        
+        return x_recon
