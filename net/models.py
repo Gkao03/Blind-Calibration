@@ -95,9 +95,9 @@ class AdaptiveLISTA(nn.Module):
         return x_recon
 
 
-class ALISTANet(nn.Module):
+class ALISTA(nn.Module):
     def __init__(self, input_size, dict_size, num_layers):
-        super(ALISTANet, self).__init__()
+        super(ALISTA, self).__init__()
         
         self.input_size = input_size
         self.dict_size = dict_size
