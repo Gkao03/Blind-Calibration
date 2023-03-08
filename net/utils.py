@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import torch
-import torchvision.transforms as transforms
+# import torchvision.transforms as transforms
 from PIL import Image
 
 
@@ -11,5 +11,5 @@ def np_to_image_save(np_array, path):
 
 
 def read_image(path, flag):
-    im = cv2.imread(path, flag=flag)
+    im = cv2.imread(path, flag)
     return im
