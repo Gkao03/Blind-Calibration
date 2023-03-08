@@ -8,3 +8,8 @@ from PIL import Image
 def np_to_image_save(np_array, path):
     im = Image.fromarray(np_array)
     im.save(path)
+
+
+def read_image(path, flag):
+    im = cv2.imread(path, flag=flag)
+    return im
