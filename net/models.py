@@ -50,6 +50,35 @@ class LISTA(nn.Module):
             
         # Return the final sparse code
         return z.view(-1, self.dict_size)
+    
+
+class LISTAv2(nn.Module):
+    def __init__(self, A, num_iterations, sparsity_level):
+        super(LISTAv2, self).__init__()
+        self.A = nn.Parameter(torch.Tensor(A), requires_grad=False)
+        self.num_iterations = num_iterations
+        self.sparsity_level = sparsity_level
+        self.theta = nn.Parameter(torch.Tensor(num_iterations, A.shape[1], A.shape[1]))
+        self.bias = nn.Parameter(torch.Tensor(num_iterations, A.shape[1]))
+        self.soft_threshold = nn.Softshrink()
+
+        nn.init.xavier_uniform_(self.theta)
+        nn.init.zeros_(self.bias)
+
+    def forward(self, y):
+        # Initialize z to be the measurements y
+        z = y
+
+        for i in range(self.num_iterations):
+            # Compute the sparse code
+            sparse_code = torch.matmul(z, self.theta[i]) + self.bias[i]
+            sparse_code = self.soft_threshold(sparse_code, self.sparsity_level)
+
+            # Update the estimate using the sparse code
+            z = torch.matmul(sparse_code, self.A)
+
+        # Return the final estimate
+        return sparse_code
 
 
 class AdaptiveLISTA(nn.Module):
