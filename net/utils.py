@@ -34,6 +34,6 @@ def translate_by_phase_shift(image, dx, dy):
     # Phase shift
     shifted_fimage = phase_shift(fimage, dx, dy)
     # Inverse transform -> translated image
-    shifted_image = np.real(np.fft.ifftn(np.fft.ifftshift(shifted_fimage)))
+    shifted_image = np.fft.ifftn(np.fft.ifftshift(shifted_fimage))
 
     return shifted_image
