@@ -10,4 +10,6 @@ class LISTA_Layer(nn.Module):
         self.shrink = shrink
 
     def forward(self, X):
-        pass
+        C = self.B + torch.matmul(self.S, X)
+        X_hat = self.shrink(C)
+        return X_hat
