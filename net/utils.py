@@ -37,3 +37,9 @@ def translate_by_phase_shift(image, dx, dy):
     shifted_image = np.fft.ifftn(np.fft.ifftshift(shifted_fimage))
 
     return shifted_image
+
+
+def generate_X(m, p, theta):
+    # generate IID bernoulli-gaussian data x
+    X = (0.5 * np.random.randn(m, p) + 0.5 * 1j * np.random.randn(m, p)) * (np.random.rand(m, p) <= theta)
+    return X
