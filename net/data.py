@@ -4,7 +4,7 @@ import numpy as np
 
 
 class MyDataset(Dataset):
-    def __init__(self, diag_g, A, m, p, theta):
+    def __init__(self, diag_g: np.ndarray, A: np.ndarray, m: np.ndarray, p: np.ndarray, theta: float):
         self.diag_g = diag_g  # calibration
         self.A = A  # measurement matrix
         self.m = m  # dimension of x_i
