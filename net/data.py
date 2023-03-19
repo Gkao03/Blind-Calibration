@@ -4,15 +4,20 @@ import numpy as np
 
 
 class MyDataset(Dataset):
-    def __init__(self, data, labels):
-        self.data = data
-        self.labels = labels
+    def __init__(self, diag_g, A, m, p, theta):
+        self.diag_g = diag_g  # calibration
+        self.A = A  # measurement matrix
+        self.m = m  # dimension of x_i
+        self.p = p  # number of measurements
+        self.theta = theta  # sparsity level 0 < theta < 1
 
     def __getitem__(self, index):
-        return self.data[index], self.labels[index]
+        X = generate_X(self.m, self.p, self.theta)
+        Y = self.diag_g @ self.A @ X
+        return torch.Tensor(Y), torch.Tensor(X)
 
     def __len__(self):
-        return len(self.data)
+        return self.p
 
 
 def generate_X(m, p, theta):
