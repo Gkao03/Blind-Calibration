@@ -16,9 +16,10 @@ class LISTA_Layer(nn.Module):
 
 
 class LISTA(nn.Module):
-    def __init__(self, A, lambd, num_layers):
+    def __init__(self, A, diag_g, lambd, num_layers):
         super(LISTA, self).__init__()
         self.A = A
+        self.diag_g = diag_g
         self.lambd = lambd
         self.num_layers = num_layers
 
