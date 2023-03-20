@@ -38,12 +38,6 @@ def generate_A(m, n):
 
 
 def generate_diag_g(m, kappa):
-    # all_R = np.zeros((n, m))
-    # all_normed_R = np.zeros((n, m))
-
-    # F = linalg.dft(m) / np.sqrt(m)
-    # FH = F.conj().T
-
     dft_gain_f = np.random.uniform(0, kappa, m)
     dft_phase_f = np.random.uniform(0, 2 * np.pi, m)
     ground_truth_g = dft_gain_f * np.exp(1j * dft_phase_f)
