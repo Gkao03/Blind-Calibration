@@ -25,3 +25,18 @@ def generate_X(m, p, theta):
     # generate IID bernoulli-gaussian data x
     X = (0.5 * np.random.randn(m, p) + 0.5 * 1j * np.random.randn(m, p)) * (np.random.rand(m, p) <= theta)
     return X
+
+
+def generate_diag_g(m, n, kappa):
+    # all_R = np.zeros((n, m))
+    # all_normed_R = np.zeros((n, m))
+
+    # F = linalg.dft(m) / np.sqrt(m)
+    # FH = F.conj().T
+
+    dft_gain_f = np.random.uniform(0, kappa, n)
+    dft_phase_f = np.random.uniform(0, 2 * np.pi, n)
+    ground_truth_g = dft_gain_f * np.exp(1j * dft_phase_f)
+    diag_g = np.diag(ground_truth_g)
+
+    return diag_g
