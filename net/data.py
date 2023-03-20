@@ -27,15 +27,25 @@ def generate_X(m, p, theta):
     return X
 
 
-def generate_diag_g(n, kappa):
+def generate_A(m, n):
+    assert m <= n, "m should be less than equal to n"
+
+    dft_mat = linalg.dft(n) / np.sqrt(n)
+    random_select_row = np.random.permutation(n)
+    A = dft_mat[random_select_row[:m], :]
+
+    return A
+
+
+def generate_diag_g(m, kappa):
     # all_R = np.zeros((n, m))
     # all_normed_R = np.zeros((n, m))
 
     # F = linalg.dft(m) / np.sqrt(m)
     # FH = F.conj().T
 
-    dft_gain_f = np.random.uniform(0, kappa, n)
-    dft_phase_f = np.random.uniform(0, 2 * np.pi, n)
+    dft_gain_f = np.random.uniform(0, kappa, m)
+    dft_phase_f = np.random.uniform(0, 2 * np.pi, m)
     ground_truth_g = dft_gain_f * np.exp(1j * dft_phase_f)
     diag_g = np.diag(ground_truth_g)
 
