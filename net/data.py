@@ -21,9 +21,9 @@ class MyDataset(Dataset):
         return self.p
 
 
-def generate_X(m, p, theta):
+def generate_X(n, p, theta):
     # generate IID bernoulli-gaussian data x
-    X = (0.5 * np.random.randn(m, p) + 0.5 * 1j * np.random.randn(m, p)) * (np.random.rand(m, p) <= theta)
+    X = (0.5 * np.random.randn(n, p) + 0.5 * 1j * np.random.randn(n, p)) * (np.random.rand(n, p) <= theta)
     return X
 
 
