@@ -27,7 +27,7 @@ def generate_X(m, p, theta):
     return X
 
 
-def generate_diag_g(m, n, kappa):
+def generate_diag_g(n, kappa):
     # all_R = np.zeros((n, m))
     # all_normed_R = np.zeros((n, m))
 
