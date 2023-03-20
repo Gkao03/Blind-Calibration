@@ -19,10 +19,10 @@ class LISTA(nn.Module):
     def __init__(self, A, diag_g, lambd, num_layers):
         super(LISTA, self).__init__()
         self.A = A
+        self.m, self.n = A.shape
         self.diag_g = diag_g
         self.lambd = lambd
         self.num_layers = num_layers
-
         self.model = self.build_model()
 
     def build_model(self):
