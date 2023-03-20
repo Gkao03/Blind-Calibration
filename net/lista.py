@@ -13,3 +13,19 @@ class LISTA_Layer(nn.Module):
         C = self.B + torch.matmul(self.S, X)
         X_hat = self.shrink(C)
         return X_hat
+
+
+class LISTA(nn.Module):
+    def __init__(self, A, lambd, num_layers):
+        super(LISTA, self).__init__()
+        self.A = A
+        self.lambd = lambd
+        self.num_layers = num_layers
+
+        self.model = self.build_model()
+
+    def build_model(self):
+        pass
+
+    def forward(self, Y):
+        pass
