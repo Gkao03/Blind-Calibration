@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import numpy as np
+import numpy.linalg as la
 
 
 class LISTA_Layer(nn.Module):
@@ -16,7 +18,7 @@ class LISTA_Layer(nn.Module):
 
 
 class LISTA(nn.Module):
-    def __init__(self, A, diag_g, lambd, num_layers):
+    def __init__(self, A: np.ndarray, diag_g: np.ndarray, lambd, num_layers):
         super(LISTA, self).__init__()
         self.A = A
         self.m, self.n = A.shape
@@ -26,7 +28,15 @@ class LISTA(nn.Module):
         self.model = self.build_model()
 
     def build_model(self):
-        pass
+        B = self.A.T / (1.01 * la.norm(self.A, 2) ** 2)
+        S = np.identity(self.n) - np.matmul(B, self.A)
+        layers = []
+
+        for _ in range(self.num_layers):
+            lista_layer = LISTA_Layer(B, S, nn.Softshrink(self.lambd))
+            layers.append(lista_layer)
+
+        return nn.Sequential(*layers)
 
     def forward(self, Y):
-        pass
+        return self.model(Y)
