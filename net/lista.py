@@ -11,8 +11,8 @@ class LISTA_Layer(nn.Module):
         self.S = nn.Parameter(S)
         self.shrink = shrink
 
-    def forward(self, X):
-        C = self.B + torch.matmul(self.S, X)
+    def forward(self, Y):
+        C = torch.matmul(self.B, Y) + torch.matmul(self.S, Y)
         X_hat = self.shrink(C)
         return X_hat
 
