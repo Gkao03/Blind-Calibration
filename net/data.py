@@ -21,6 +21,12 @@ class MyDataset(Dataset):
         return self.p
 
 
+def get_lista_dataloader(diag_g: np.ndarray, A: np.ndarray, m: np.ndarray, p: np.ndarray, theta: float, batch_size: int):
+    my_dataset = MyDataset(diag_g, A, m, p, theta)
+    dataloader = DataLoader(my_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
+    return dataloader
+
+
 def generate_X(n, p, theta):
     # generate IID bernoulli-gaussian data x
     X = (0.5 * np.random.randn(n, p) + 0.5 * 1j * np.random.randn(n, p)) * (np.random.rand(n, p) <= theta)
