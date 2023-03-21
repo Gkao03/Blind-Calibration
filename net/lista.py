@@ -4,6 +4,7 @@ import numpy as np
 import numpy.linalg as la
 
 
+# TODO: need to add diag_g to lista layer formulation
 class LISTA_Layer(nn.Module):
     def __init__(self, B, S, shrink) -> None:
         super(LISTA_Layer, self).__init__()
