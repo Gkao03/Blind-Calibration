@@ -5,3 +5,4 @@ class Args:
         self.p = 1024
         self.theta = 0.3
         self.batch_size = 4
+        self.random_seed = 2023
