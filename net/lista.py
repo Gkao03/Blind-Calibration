@@ -40,3 +40,12 @@ class LISTA(nn.Module):
 
     def forward(self, Y):
         return self.model(Y)
+    
+
+class CustomLoss(nn.Module):
+    def __init__(self):
+        super(CustomLoss, self).__init__()
+
+    def forward(self, X_hat, Y):  # TODO: custom loss
+        pass
+
