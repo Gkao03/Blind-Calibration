@@ -42,10 +42,13 @@ class LISTA(nn.Module):
         return self.model(Y)
     
 
-class CustomLoss(nn.Module):
-    def __init__(self):
-        super(CustomLoss, self).__init__()
+class LossLayer(nn.Module):
+    def __init__(self, target, norm):
+        super(LossLayer, self).__init__()
+        self.target = target
+        self.norm = norm
 
-    def forward(self, X_hat, Y):  # TODO: custom loss
-        pass
+    def forward(self, input):  # TODO: custom loss
+        self.loss = torch.norm(input - self.target, self.norm)
+        return input
 
