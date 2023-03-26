@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader, Dataset
 import scipy.linalg as linalg
 import numpy as np
 
-# TODO: fix batching
+# TODO: fix batching - need to define collate function
 class MyDataset(Dataset):
     def __init__(self, diag_g: np.ndarray, A: np.ndarray, n: np.ndarray, p: np.ndarray, theta: float):
         self.diag_g = diag_g  # calibration
