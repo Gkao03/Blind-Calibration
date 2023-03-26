@@ -69,6 +69,9 @@ class LISTA(nn.Module):
             self.layer_losses.append(loss_layer)
 
         return nn.Sequential(*layers)
+    
+    def get_losses(self):
+        return self.layer_losses
 
     def forward(self, Y):
         return self.model(Y)
