@@ -17,14 +17,27 @@ class LossLayer(nn.Module):
         return input
     
 
+class LISTA_Layer1(nn.Module):
+    def __init__(self, B, shrink):
+        self.B = nn.Parameter(B)
+        self.shrink = shrink
+
+    def forward(self, Y):
+        C = torch.matmul(self.B, Y)
+        X_hat = self.shrink(C)
+        return X_hat
+    
+
 class LISTA_Layer(nn.Module):
-    def __init__(self, B, S, shrink) -> None:
+    def __init__(self, B, S, shrink):
         super(LISTA_Layer, self).__init__()
         self.B = nn.Parameter(B)
         self.S = nn.Parameter(S)
         self.shrink = shrink
 
     def forward(self, Y):
+        print(f"B shape {self.B.shape} S shape {self.S.shape} Y shape {Y.shape}")
+        # B shape (256, 64). S shape (256, 256). Y shape (64, 1)
         C = torch.matmul(self.B, Y) + torch.matmul(self.S, Y)
         X_hat = self.shrink(C)
         return X_hat

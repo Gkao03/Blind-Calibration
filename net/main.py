@@ -13,4 +13,8 @@ if __name__ == "__main__":
     model = LISTA(A, diag_g, args.lambd, args.num_layers)
 
     for batch_idx, (Y, X) in enumerate(dataloader):
+        print(Y.shape)
+        print(X.shape)
+        out = model(Y)
+        break
         print(f"{batch_idx} / {len(dataloader)} Y shape: {Y.shape} X shape: {X.shape}")
