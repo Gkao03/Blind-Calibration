@@ -18,20 +18,21 @@ if __name__ == "__main__":
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    for batch_idx, (Y, X) in enumerate(dataloader):
-        optimizer.zero_grad()
+    for epoch in range(args.epochs):
+        for batch_idx, (Y, X) in enumerate(dataloader):
+            optimizer.zero_grad()
 
-        # get model output
-        out, _ = model(Y)
+            # get model output
+            out, _ = model(Y)
 
-        # get recons
-        recon_layers = model.get_recons()
-        loss = 0
+            # get recons
+            recon_layers = model.get_recons()
+            loss = 0
 
-        # calculate loss
-        for recon_layer in recon_layers:
-            loss += criterion(recon_layer.get_recon(), X)
+            # calculate loss
+            for recon_layer in recon_layers:
+                loss += criterion(recon_layer.get_recon(), X)
 
-        # back prop
-        loss.backward()
-        optimizer.step()
+            # back prop
+            loss.backward()
+            optimizer.step()
