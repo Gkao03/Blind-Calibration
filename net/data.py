@@ -15,7 +15,7 @@ class MyDataset(Dataset):
     def __getitem__(self, index):
         X = generate_X(self.n, 1, self.theta)
         Y = self.diag_g @ self.A @ X
-        return torch.Tensor(Y), torch.Tensor(X)
+        return torch.tensor(Y), torch.tensor(X)
 
     def __len__(self):
         return self.p

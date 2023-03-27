@@ -10,4 +10,4 @@ if __name__ == "__main__":
     dataloader = get_lista_dataloader(diag_g, A, n, p, 0.3, 8, collate_fn=collate_function)
 
     for batch_idx, (Y, X) in enumerate(dataloader):
-        print(f"{batch_idx} / {len(dataloader)}")
+        print(f"{batch_idx} / {len(dataloader)} Y shape: {Y.shape} X shape: {X.shape}")
