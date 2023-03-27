@@ -4,5 +4,7 @@ class Args:
         self.n = 64 * 4
         self.p = 1024
         self.theta = 0.3
-        self.batch_size = 4
+        self.lambd = 0.1
+        self.num_layers = 8
+        self.batch_size = 8
         self.random_seed = 2023
