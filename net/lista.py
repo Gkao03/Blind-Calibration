@@ -67,7 +67,9 @@ class LISTA(nn.Module):
         # list of layers
         layers = []
         layers.append(LISTA_Layer1(B, nn.Softshrink(self.lambd)))
-        layers.append(LossLayer())
+        first_loss_layer = LossLayer()
+        layers.append(first_loss_layer)
+        self.layer_losses.append(first_loss_layer)
 
         for _ in range(self.num_layers):
             lista_layer = LISTA_Layer(B, S, nn.Softshrink(self.lambd))
