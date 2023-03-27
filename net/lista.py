@@ -79,6 +79,8 @@ class LISTA(nn.Module):
 
         # list of layers
         layers = []
+
+        # initial layers
         layers.append(LISTA_Layer1(B, nn.Softshrink(self.lambd)))
         recon_layer = ReconLayer()
         layers.append(recon_layer)
