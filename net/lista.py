@@ -19,7 +19,7 @@ class LossLayer(nn.Module):
 
 class LISTA_Layer1(nn.Module):
     def __init__(self, B, shrink):
-        super(LISTA_Layer1, self)
+        super(LISTA_Layer1, self).__init__()
         self.B = nn.Parameter(B)
         self.shrink = shrink
 
