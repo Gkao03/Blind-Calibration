@@ -23,3 +23,12 @@ if __name__ == '__main__':
     im_fft_shift = np.fft.fftshift(im_fft)
     np_to_image_save(np.log(np.abs(im_fft_shift)), "test_shift_fft.png")
 
+    # misc unused inference for result
+    # m = self.A.shape[0]
+    # batch_size = input.shape[0]  # batch size
+    # R = 1 / torch.sqrt((1 / (self.theta * m * batch_size)) * torch.matmul(input, torch.conj(input).mT))
+    
+    # res = torch.matmul(torch.conj(self.A).mT, self.diag_h)
+    # res = torch.matmul(res, R)
+    # res = torch.matmul(res, input)
+
