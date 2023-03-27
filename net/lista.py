@@ -81,13 +81,13 @@ class LISTA(nn.Module):
         layers = []
 
         # initial layers
-        layers.append(LISTA_Layer1(B, nn.Softshrink(self.lambd)))
+        layers.append(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
         recon_layer = ReconLayer()
         layers.append(recon_layer)
         self.recon_layers.append(recon_layer)
 
         for _ in range(self.num_layers):
-            lista_layer = LISTA_Layer(B, S, nn.Softshrink(self.lambd))
+            lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
             layers.append(lista_layer)
 
             # add loss layer
