@@ -32,7 +32,7 @@ class LISTA_Layer1(nn.Module):
         X_hat_imag = self.shrink(By_imag)
         X_hat = torch.complex(X_hat_real, X_hat_imag)
 
-        return X_hat
+        return X_hat, By
     
 
 class LISTA_Layer(nn.Module):
@@ -43,9 +43,9 @@ class LISTA_Layer(nn.Module):
         self.shrink = shrink
 
     def forward(self, input):
-        print(f"B shape {self.B.shape} S shape {self.S.shape} input shape {input.shape}")
-        # B shape (256, 64). S shape (256, 256). Y shape (64, 1)
-        C = torch.matmul(self.B, input) + torch.matmul(self.S, input)
+        X_in, By = input
+
+        C = torch.matmul(self.S, X_in) + By
         X_hat = self.shrink(C)
         return X_hat
 
