@@ -52,8 +52,8 @@ class LISTA_Layer(nn.Module):
         X_hat_real = self.shrink(C_real)
         X_hat_imag = self.shrink(C_imag)
         X_hat = torch.complex(X_hat_real, X_hat_imag)
-        
-        return X_hat
+
+        return X_hat, By
 
 
 class LISTA(nn.Module):
