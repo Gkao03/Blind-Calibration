@@ -95,7 +95,7 @@ class LISTA(nn.Module):
 
         return nn.Sequential(*layers)
     
-    def get_losses(self):
+    def get_recons(self):
         return self.recon_layers
 
     def forward(self, Y):
