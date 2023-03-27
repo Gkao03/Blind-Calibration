@@ -13,7 +13,7 @@ class MyDataset(Dataset):
         self.theta = theta  # sparsity level 0 < theta < 1
 
     def __getitem__(self, index):
-        X = generate_X(self.n, self.p, self.theta)
+        X = generate_X(self.n, 1, self.theta)
         Y = self.diag_g @ self.A @ X
         return torch.Tensor(Y), torch.Tensor(X)
 
@@ -21,9 +21,16 @@ class MyDataset(Dataset):
         return self.p
 
 
-def get_lista_dataloader(diag_g: np.ndarray, A: np.ndarray, m: np.ndarray, p: np.ndarray, theta: float, batch_size: int):
+def collate_function(batch):
+    Y, X = zip(*batch)
+    Y_stack = torch.stack(Y, dim=0)
+    X_stack = torch.stack(X, dim=0)
+    return Y_stack, X_stack
+
+
+def get_lista_dataloader(diag_g: np.ndarray, A: np.ndarray, m: np.ndarray, p: np.ndarray, theta: float, batch_size: int, collate_fn):
     my_dataset = MyDataset(diag_g, A, m, p, theta)
-    dataloader = DataLoader(my_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
+    dataloader = DataLoader(my_dataset, batch_size=batch_size, shuffle=True, num_workers=2, collate_fn=collate_fn)
     return dataloader
 
 
