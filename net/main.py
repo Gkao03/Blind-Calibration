@@ -8,6 +8,7 @@ import torch.optim as optim
 
 if __name__ == "__main__":
     args = Args()
+    np.random.seed(args.random_seed)
 
     diag_g = generate_diag_g(args.m, 2)
     A = generate_A(args.m, args.n)
