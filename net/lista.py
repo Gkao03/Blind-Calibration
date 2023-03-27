@@ -44,8 +44,14 @@ class LISTA(nn.Module):
         self.model = self.build_model()
 
     def build_model(self):
-        B = (self.diag_g @ self.A.T) / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
+        B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
         S = np.identity(self.n) - np.matmul(B, self.A)
+
+        # convert to tensors
+        B = torch.tensor(B)
+        S = torch.tensor(S)
+
+        # list of layers
         layers = []
 
         for _ in range(self.num_layers):
