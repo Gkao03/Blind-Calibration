@@ -46,7 +46,13 @@ class LISTA_Layer(nn.Module):
         X_in, By = input
 
         C = torch.matmul(self.S, X_in) + By
-        X_hat = self.shrink(C)
+        C_real = C.real
+        C_imag = C.imag
+
+        X_hat_real = self.shrink(C_real)
+        X_hat_imag = self.shrink(C_imag)
+        X_hat = torch.complex(X_hat_real, X_hat_imag)
+        
         return X_hat
 
 
