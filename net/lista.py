@@ -13,7 +13,7 @@ class ReconLayer(nn.Module):
         return self.recon
 
     def forward(self, input):
-        self.recon = input
+        self.recon = input[0]
         return input
     
 
