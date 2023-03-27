@@ -8,3 +8,4 @@ class Args:
         self.num_layers = 8
         self.batch_size = 8
         self.random_seed = 2023
+        self.epochs = 100
