@@ -5,9 +5,9 @@ import numpy as np
 import numpy.linalg as la
 
 
-class LossLayer(nn.Module):
+class ReconLayer(nn.Module):
     def __init__(self):
-        super(LossLayer, self).__init__()
+        super(ReconLayer, self).__init__()
 
     def get_recon(self):
         return self.recon
@@ -66,7 +66,7 @@ class LISTA(nn.Module):
         self.num_layers = num_layers
 
         # build on init
-        self.layer_losses = []
+        self.recon_layers = []
         self.model = self.build_model()
 
     def build_model(self):
@@ -80,23 +80,23 @@ class LISTA(nn.Module):
         # list of layers
         layers = []
         layers.append(LISTA_Layer1(B, nn.Softshrink(self.lambd)))
-        first_loss_layer = LossLayer()
-        layers.append(first_loss_layer)
-        self.layer_losses.append(first_loss_layer)
+        recon_layer = ReconLayer()
+        layers.append(recon_layer)
+        self.recon_layers.append(recon_layer)
 
         for _ in range(self.num_layers):
             lista_layer = LISTA_Layer(B, S, nn.Softshrink(self.lambd))
             layers.append(lista_layer)
 
             # add loss layer
-            loss_layer = LossLayer()
-            layers.append(loss_layer)
-            self.layer_losses.append(loss_layer)
+            recon_layer = ReconLayer()
+            layers.append(recon_layer)
+            self.recon_layers.append(recon_layer)
 
         return nn.Sequential(*layers)
     
     def get_losses(self):
-        return self.layer_losses
+        return self.recon_layers
 
     def forward(self, Y):
         return self.model(Y)
