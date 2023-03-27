@@ -24,14 +24,14 @@ class LISTA_Layer1(nn.Module):
         self.shrink = shrink
 
     def forward(self, Y):
-        C = torch.matmul(self.B, Y)
-        C_real = C.real
-        C_imag = C.imag
+        By = torch.matmul(self.B, Y)
+        By_real = By.real
+        By_imag = By.imag
 
-        X_hat_real = self.shrink(C_real)
-        X_hat_imag = self.shrink(C_imag)
+        X_hat_real = self.shrink(By_real)
+        X_hat_imag = self.shrink(By_imag)
         X_hat = torch.complex(X_hat_real, X_hat_imag)
-        
+
         return X_hat
     
 
