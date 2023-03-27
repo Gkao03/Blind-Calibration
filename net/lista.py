@@ -35,10 +35,10 @@ class LISTA_Layer(nn.Module):
         self.S = nn.Parameter(S)
         self.shrink = shrink
 
-    def forward(self, Y):
-        print(f"B shape {self.B.shape} S shape {self.S.shape} Y shape {Y.shape}")
+    def forward(self, input):
+        print(f"B shape {self.B.shape} S shape {self.S.shape} input shape {input.shape}")
         # B shape (256, 64). S shape (256, 256). Y shape (64, 1)
-        C = torch.matmul(self.B, Y) + torch.matmul(self.S, Y)
+        C = torch.matmul(self.B, input) + torch.matmul(self.S, input)
         X_hat = self.shrink(C)
         return X_hat
 
@@ -66,6 +66,8 @@ class LISTA(nn.Module):
 
         # list of layers
         layers = []
+        layers.append(LISTA_Layer1(B, nn.Softshrink(self.lambd)))
+        layers.append(LossLayer())
 
         for _ in range(self.num_layers):
             lista_layer = LISTA_Layer(B, S, nn.Softshrink(self.lambd))
