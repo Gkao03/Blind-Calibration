@@ -66,10 +66,10 @@ class LISTA(nn.Module):
         self.num_layers = num_layers
 
         # build on init
-        self.recon_layers = []
-        self.model = self.build_model()
+        self.recon_layers = []  # may or may not be used depending on version
+        self.model = self.build_model_v2()
 
-    def build_model(self):
+    def build_model_v1(self):
         B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
         S = np.identity(self.n) - np.matmul(B, self.A)
 
@@ -90,10 +90,30 @@ class LISTA(nn.Module):
             lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
             layers.append(lista_layer)
 
-            # add loss layer
+            # add recon layer
             recon_layer = ReconLayer()
             layers.append(recon_layer)
             self.recon_layers.append(recon_layer)
+
+        return nn.Sequential(*layers)
+    
+    def build_model_v2(self):
+        B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
+        S = np.identity(self.n) - np.matmul(B, self.A)
+
+        # convert to tensors
+        B = torch.tensor(B)
+        S = torch.tensor(S)
+
+        # list of layers
+        layers = []
+
+        # initial layers
+        layers.append(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
+
+        for _ in range(self.num_layers):
+            lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
+            layers.append(lista_layer)
 
         return nn.Sequential(*layers)
     
