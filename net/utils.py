@@ -3,7 +3,44 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 import imageio
+import matplotlib.pyplot as plt
 from PIL import Image
+
+
+def plot_multiple(x, ys, legends, title="title", xlabel="x label", ylabel="y label", savefile="plot.png", ylim=None):
+    plt.style.use('tableau-colorblind10')
+    
+    for y, legend in zip(ys, legends):
+        plt.plot(x, y, linewidth=1, label=legend)
+
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend(loc='best', fontsize='small')
+
+    if ylim is not None:
+        plt.ylim(ylim)
+    
+    plt.savefig(savefile)
+    print("saved plot")
+    plt.close()
+
+
+def plot_single(x, y, title="title", xlabel="x label", ylabel="y label", savefile="plot.png", ylim=None):
+    plt.style.use('tableau-colorblind10')
+    
+    plt.plot(x, y, linewidth=1)
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend(loc='best', fontsize='small')
+
+    if ylim is not None:
+        plt.ylim(ylim)
+    
+    plt.savefig(savefile)
+    print("saved plot")
+    plt.close()
 
 
 def get_device():
