@@ -6,6 +6,7 @@ class Args:
         self.theta = 0.3
         self.lambd = 0.1
         self.num_layers = 4
+        self.lr = 0.001
         self.batch_size = 8
         self.random_seed = 2023
         self.epochs = 10

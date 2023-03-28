@@ -24,7 +24,7 @@ if __name__ == "__main__":
     device = get_device()
     model = LISTA(A, diag_g, args.lambd, args.num_layers).to(device)
     criterion = nn.L1Loss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
     losses = []
 
     for layer_num in range(args.num_layers + 1):
