@@ -103,7 +103,7 @@ class LISTA(nn.Module):
         self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
 
         for i in range(self.num_layers):
-            lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
+            lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
             self.model.add_module(f'layer{i + 1}', lista_layer)
     
     def get_recons(self):
