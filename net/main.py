@@ -25,12 +25,13 @@ if __name__ == "__main__":
     model = LISTA(A, diag_g, args.lambd, args.num_layers).to(device)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
     losses = []
 
     for layer_num in range(args.num_layers + 1):
 
-        for iter in range(args.iters_per_layer):
-            print(f"iteration {iter + 1}/{args.iters_per_layer}")
+        for iter in range(args.epochs_per_layer):
+            print(f"iteration {iter + 1}/{args.epochs_per_layer}")
 
             for batch_idx, (Y, X) in enumerate(dataloader):
                 # send to device
@@ -50,6 +51,8 @@ if __name__ == "__main__":
                 # back prop
                 loss.backward()
                 optimizer.step()
+
+        scheduler.step()
 
         # freeze layer after training loop
         print(f"freezing layer {layer_num}")

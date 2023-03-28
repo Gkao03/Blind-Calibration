@@ -10,6 +10,6 @@ class Args:
         self.batch_size = 16
         self.random_seed = 2023
         self.epochs = 10
-        self.iters_per_layer = 100
+        self.epochs_per_layer = 10
         self.save_dir = "./out"
         self.exp_num = 1
