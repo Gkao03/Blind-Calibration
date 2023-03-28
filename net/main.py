@@ -2,6 +2,7 @@ from data import *
 from utils import get_device
 from config import Args
 from lista import LISTA
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -11,6 +12,11 @@ if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
 
+    # output dir
+    out_dir = os.path.join(args.save_dir, f"exp{args.exp_num}")
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
     diag_g = generate_diag_g(args.m, 2)
     A = generate_A(args.m, args.n)
     dataloader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
@@ -19,6 +25,7 @@ if __name__ == "__main__":
     model = LISTA(A, diag_g, args.lambd, args.num_layers).to(device)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
+    losses = []
 
     for layer_num in range(args.num_layers + 1):
 
@@ -38,6 +45,7 @@ if __name__ == "__main__":
 
                 # calculate loss
                 loss = criterion(out, X)
+                losses.append(loss.item())
 
                 # back prop
                 loss.backward()
