@@ -67,7 +67,8 @@ class LISTA(nn.Module):
 
         # build on init
         self.recon_layers = []  # may or may not be used depending on version
-        self.model = self.build_model_v2()
+        self.model = nn.Sequential()
+        self.build_model_v2()
 
     def build_model_v1(self):
         B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
@@ -77,25 +78,20 @@ class LISTA(nn.Module):
         B = torch.tensor(B)
         S = torch.tensor(S)
 
-        # list of layers
-        layers = []
-
         # initial layers
-        layers.append(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
+        self.model.add_module(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
         recon_layer = ReconLayer()
-        layers.append(recon_layer)
+        self.model.add_module('recon_layer0', recon_layer)
         self.recon_layers.append(recon_layer)
 
-        for _ in range(self.num_layers):
+        for i in range(self.num_layers):
             lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
-            layers.append(lista_layer)
+            self.model.add_module(f'layer{i + 1}', lista_layer)
 
             # add recon layer
             recon_layer = ReconLayer()
-            layers.append(recon_layer)
+            self.model.add_module(f'recon_layer{i + 1}', recon_layer)
             self.recon_layers.append(recon_layer)
-
-        return nn.Sequential(*layers)
     
     def build_model_v2(self):
         B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
@@ -105,17 +101,11 @@ class LISTA(nn.Module):
         B = torch.tensor(B)
         S = torch.tensor(S)
 
-        # list of layers
-        layers = []
+        self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
 
-        # initial layers
-        layers.append(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
-
-        for _ in range(self.num_layers):
+        for i in range(self.num_layers):
             lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
-            layers.append(lista_layer)
-
-        return nn.Sequential(*layers)
+            self.model.add_module(f'layer{i + 1}', lista_layer)
     
     def get_recons(self):
         return self.recon_layers
