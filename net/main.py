@@ -1,4 +1,5 @@
 from data import *
+from utils import get_device
 from config import Args
 from lista import LISTA
 import torch
@@ -12,9 +13,10 @@ if __name__ == "__main__":
 
     diag_g = generate_diag_g(args.m, 2)
     A = generate_A(args.m, args.n)
-
     dataloader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
-    model = LISTA(A, diag_g, args.lambd, args.num_layers)
+    
+    device = get_device()
+    model = LISTA(A, diag_g, args.lambd, args.num_layers).to(device)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
@@ -24,6 +26,11 @@ if __name__ == "__main__":
             print(f"iteration {iter + 1}/{args.iters_per_layer}")
 
             for batch_idx, (Y, X) in enumerate(dataloader):
+                # send to device
+                Y = Y.to(device)
+                X = X.to(device)
+
+                # zero gradients
                 optimizer.zero_grad()
 
                 # get model output
