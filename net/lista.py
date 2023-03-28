@@ -36,9 +36,8 @@ class LISTA_Layer1(nn.Module):
     
 
 class LISTA_Layer(nn.Module):
-    def __init__(self, B, S, shrink):
+    def __init__(self, S, shrink):
         super(LISTA_Layer, self).__init__()
-        self.B = nn.Parameter(B)
         self.S = nn.Parameter(S)
         self.shrink = shrink
 
@@ -85,7 +84,7 @@ class LISTA(nn.Module):
         self.recon_layers.append(recon_layer)
 
         for i in range(self.num_layers):
-            lista_layer = LISTA_Layer(B.detach().clone(), S.detach().clone(), nn.Softshrink(self.lambd))
+            lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
             self.model.add_module(f'layer{i + 1}', lista_layer)
 
             # add recon layer
