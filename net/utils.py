@@ -6,6 +6,10 @@ import imageio
 from PIL import Image
 
 
+def get_device():
+    return "cuda" if torch.cuda.is_available() else "cpu"
+
+
 def np_to_image_save(np_array, path):
     imageio.imwrite(path, np_array)
 
