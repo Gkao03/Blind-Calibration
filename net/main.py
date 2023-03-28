@@ -1,5 +1,5 @@
 from data import *
-from utils import get_device
+from utils import get_device, plot_multiple, plot_single
 from config import Args
 from lista import LISTA
 import os
@@ -56,6 +56,13 @@ if __name__ == "__main__":
         for name, param in model.named_parameters():
             if param.requires_grad and f'layer{layer_num}' in name:
                 param.requires_grad = False
+
+    # save model
+    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+
+    # plot losses
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+
 
     # training with intermediate recon layers
     # for epoch in range(args.epochs):
