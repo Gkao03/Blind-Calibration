@@ -88,7 +88,7 @@ class LISTA(nn.Module):
         S = torch.tensor(S)
 
         # initial layers
-        self.model.add_module(LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
+        self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
         recon_layer = ReconLayer()
         self.model.add_module('recon_layer0', recon_layer)
         self.recon_layers.append(recon_layer)
