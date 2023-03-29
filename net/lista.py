@@ -55,13 +55,12 @@ class LISTA_Layer(nn.Module):
         return X_hat, By
 
 
-# TODO: check model definition for using diag_g
 class LISTA(nn.Module):
-    def __init__(self, A: np.ndarray, diag_g: np.ndarray, lambd, num_layers):
+    def __init__(self, A: np.ndarray, diag_g_init: np.ndarray, lambd, num_layers):
         super(LISTA, self).__init__()
         self.A = A
         self.m, self.n = A.shape
-        self.diag_g = diag_g
+        self.diag_g = diag_g_init
         self.lambd = lambd
         self.num_layers = num_layers
 
