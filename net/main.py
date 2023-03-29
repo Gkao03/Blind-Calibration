@@ -30,64 +30,75 @@ if __name__ == "__main__":
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
     losses = []
 
-    for layer_num in range(args.num_layers + 1):
+    # for layer_num in range(args.num_layers + 1):
 
-        for iter in range(args.epochs_per_layer):
-            print(f"iteration {iter + 1}/{args.epochs_per_layer}")
+    #     for iter in range(args.epochs_per_layer):
+    #         print(f"iteration {iter + 1}/{args.epochs_per_layer}")
 
-            for batch_idx, (Y, X) in enumerate(train_loader):
-                # send to device
-                Y = Y.to(device)
-                X = X.to(device)
+    #         for batch_idx, (Y, X) in enumerate(train_loader):
+    #             # send to device
+    #             Y = Y.to(device)
+    #             X = X.to(device)
 
-                # zero gradients
-                optimizer.zero_grad()
+    #             # zero gradients
+    #             optimizer.zero_grad()
 
-                # get model output
-                out, _ = model(Y)
+    #             # get model output
+    #             out, _ = model(Y)
 
-                # calculate loss
-                loss = criterion(out, X)
-                losses.append(loss.item())
+    #             # calculate loss
+    #             loss = criterion(out, X)
+    #             losses.append(loss.item())
 
-                # back prop
-                loss.backward()
-                optimizer.step()
+    #             # back prop
+    #             loss.backward()
+    #             optimizer.step()
 
-        scheduler.step()
+    #     scheduler.step()
 
-        # freeze layer after training loop
-        print(f"freezing layer {layer_num}")
-        for name, param in model.named_parameters():
-            if param.requires_grad and f'layer{layer_num}' in name:
-                param.requires_grad = False
+    #     # freeze layer after training loop
+    #     print(f"freezing layer {layer_num}")
+    #     for name, param in model.named_parameters():
+    #         if param.requires_grad and f'layer{layer_num}' in name:
+    #             param.requires_grad = False
+
+    # # save model
+    # torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+
+    # # plot losses
+    # plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+
+
+    # training with intermediate recon layers
+    for epoch in range(args.epochs):
+        for batch_idx, (Y, X) in enumerate(train_loader):
+            # send to device
+            Y = Y.to(device)
+            X = X.to(device)
+
+            # zero gradients
+            optimizer.zero_grad()
+
+            # get model output
+            out, _ = model(Y)
+
+            # get recons
+            recon_layers = model.get_recons()
+            loss = 0
+
+            # calculate loss
+            for recon_layer in recon_layers:
+                loss += criterion(recon_layer.get_recon(), X)
+
+            # back prop
+            loss.backward()
+            optimizer.step()
 
     # save model
     torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
 
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
-
-
-    # training with intermediate recon layers
-    # for epoch in range(args.epochs):
-    #     for batch_idx, (Y, X) in enumerate(dataloader):
-    #         optimizer.zero_grad()
-
-    #         # get model output
-    #         out, _ = model(Y)
-
-    #         # get recons
-    #         recon_layers = model.get_recons()
-    #         loss = 0
-
-    #         # calculate loss
-    #         for recon_layer in recon_layers:
-    #             loss += criterion(recon_layer.get_recon(), X)
-
-    #         # back prop
-    #         loss.backward()
-    #         optimizer.step()
 
     # temp = []
     # for name, param in model.named_parameters():

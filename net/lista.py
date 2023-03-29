@@ -77,7 +77,7 @@ class LISTA(nn.Module):
         # build on init
         self.recon_layers = []  # may or may not be used depending on version
         self.model = nn.Sequential()
-        self.build_model_v2()
+        self.build_model_v1()
 
     def build_model_v1(self):
         B = (self.diag_g @ self.A).T / (1.01 * la.norm(self.diag_g @ self.A, 2) ** 2)
