@@ -5,6 +5,16 @@ import numpy as np
 import numpy.linalg as la
 
 
+class SoftThreshold(nn.Module):
+    def __init__(self, lambd):
+        super(SoftThreshold, self).__init__()
+        self.lambd = nn.Parameter(lambd)
+
+    def forward(self, input):
+        lambd = torch.maximum(self.lambd, torch.zeros_like(self.lambd))
+        return torch.sign(input) * F.relu(torch.abs(input) - lambd)
+    
+
 class ReconLayer(nn.Module):
     def __init__(self):
         super(ReconLayer, self).__init__()
