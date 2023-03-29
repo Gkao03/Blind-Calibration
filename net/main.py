@@ -94,6 +94,8 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
 
+        scheduler.step()
+
     # save model
     torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
 
