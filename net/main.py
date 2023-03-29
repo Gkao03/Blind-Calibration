@@ -71,6 +71,8 @@ if __name__ == "__main__":
 
     # training with intermediate recon layers
     for epoch in range(args.epochs):
+        print(f"epoch {epoch + 1}/{args.epochs}")
+        
         for batch_idx, (Y, X) in enumerate(train_loader):
             # send to device
             Y = Y.to(device)
@@ -89,6 +91,8 @@ if __name__ == "__main__":
             # calculate loss
             for recon_layer in recon_layers:
                 loss += criterion(recon_layer.get_recon(), X)
+
+            losses.append(loss.item())
 
             # back prop
             loss.backward()
