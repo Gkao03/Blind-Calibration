@@ -1,5 +1,5 @@
 from data import *
-from utils import get_device, plot_multiple, plot_single
+from utils import get_device, plot_multiple, plot_single, plot_hist
 from config import Args
 from lista import LISTA
 import os
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     diag_g_init = np.eye(args.m)
     A = generate_A(args.m, args.n)
     train_loader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
-    test_loader = get_lista_dataloader(diag_g, A, args.n, 512, args.theta, args.batch_size, collate_fn=collate_function)
+    test_loader = get_lista_dataloader(diag_g, A, args.n, 512, args.theta, 1, collate_fn=collate_function)
     
     device = get_device()
     model = LISTA(A, diag_g_init, args.lambd, args.num_layers).to(device)
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
     losses = []
+    model.train()  # training mode
 
     # for layer_num in range(args.num_layers + 1):
 
@@ -106,6 +107,22 @@ if __name__ == "__main__":
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
 
+    # evaluation
+    model.eval()
+    recon_losses = []
+
+    for batch_idx, (Y, X) in enumerate(test_loader):
+        Y = Y.to(device)
+        X = X.to(device)
+
+        out, _ = model(Y)
+
+        recon_loss = criterion(out, X)
+        recon_losses.append(recon_loss.item())
+
+    # plot recon losses
+    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", save_path=os.path.join(out_dir, "test_recon_loss.png"))
+    
     # temp = []
     # for name, param in model.named_parameters():
     #      if 'S' in name:
