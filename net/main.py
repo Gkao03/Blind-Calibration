@@ -121,7 +121,7 @@ if __name__ == "__main__":
         recon_losses.append(recon_loss.item())
 
     # plot recon losses
-    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", save_path=os.path.join(out_dir, "test_recon_loss.png"))
+    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", savefile=os.path.join(out_dir, "test_recon_loss.png"))
     
     # temp = []
     # for name, param in model.named_parameters():
