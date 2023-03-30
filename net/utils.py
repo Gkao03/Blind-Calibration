@@ -7,6 +7,22 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
+def plot_hist(x, title="title", xlabel="x label", ylabel="y label", savefile="plot.png", ylim=None):
+    plt.style.use('tableau-colorblind10')
+
+    plt.hist(x, density=True)
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    if ylim is not None:
+        plt.ylim(ylim)
+    
+    plt.savefig(savefile)
+    print("saved plot")
+    plt.close()
+
+
 def plot_multiple(x, ys, legends, title="title", xlabel="x label", ylabel="y label", savefile="plot.png", ylim=None):
     plt.style.use('tableau-colorblind10')
     
