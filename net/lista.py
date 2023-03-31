@@ -6,9 +6,9 @@ import numpy.linalg as la
 
 
 class SoftThreshold(nn.Module):
-    def __init__(self, lambd):
+    def __init__(self, lambd_vec):
         super(SoftThreshold, self).__init__()
-        self.lambd = nn.Parameter(lambd)
+        self.lambd = nn.Parameter(lambd_vec)
 
     def forward(self, input):
         lambd = torch.maximum(self.lambd, torch.zeros_like(self.lambd))
