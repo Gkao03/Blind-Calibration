@@ -18,7 +18,8 @@ if __name__ == "__main__":
         os.makedirs(out_dir)
 
     diag_g = generate_diag_g(args.m, 2)
-    diag_g_init = np.diag(np.random.randn(args.m) + 1j * np.random.randn(args.m))
+    # diag_g_init = np.diag(np.random.randn(args.m) + 1j * np.random.randn(args.m))
+    diag_g_init = np.diag(np.random.uniform(-2, 2, args.m) + 1j * np.random.uniform(-2, 2, args.m))
     A = generate_A(args.m, args.n)
     train_loader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
     test_loader = get_lista_dataloader(diag_g, A, args.n, 512, args.theta, 1, collate_fn=collate_function)
