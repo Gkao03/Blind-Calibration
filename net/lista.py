@@ -89,14 +89,14 @@ class LISTA(nn.Module):
 
         # initial layers
         # self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), nn.Softshrink(self.lambd)))
-        self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), SoftThreshold(torch.full((self.n, ), self.lambd))))
+        self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd))))
         recon_layer = ReconLayer()
         self.model.add_module('recon_layer0', recon_layer)
         self.recon_layers.append(recon_layer)
 
         for i in range(self.num_layers):
             # lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
-            lista_layer = LISTA_Layer(S.detach().clone(), SoftThreshold(torch.full((self.n, ), self.lambd)))
+            lista_layer = LISTA_Layer(S.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
             self.model.add_module(f'layer{i + 1}', lista_layer)
 
             # add recon layer
