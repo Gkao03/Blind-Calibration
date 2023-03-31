@@ -27,9 +27,9 @@ class ReconLayer(nn.Module):
         return input
     
 
-class LISTA_Layer1(nn.Module):
+class LISTA_Layer0(nn.Module):
     def __init__(self, B, shrink):
-        super(LISTA_Layer1, self).__init__()
+        super(LISTA_Layer0, self).__init__()
         self.B = nn.Parameter(B)
         self.shrink = shrink
 
@@ -88,8 +88,8 @@ class LISTA(nn.Module):
         S = torch.tensor(S)
 
         # initial layers
-        # self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
-        self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), SoftThreshold(torch.full(self.n, self.lambd))))
+        # self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), nn.Softshrink(self.lambd)))
+        self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), SoftThreshold(torch.full(self.n, self.lambd))))
         recon_layer = ReconLayer()
         self.model.add_module('recon_layer0', recon_layer)
         self.recon_layers.append(recon_layer)
@@ -112,7 +112,7 @@ class LISTA(nn.Module):
         B = torch.tensor(B)
         S = torch.tensor(S)
 
-        self.model.add_module('layer0', LISTA_Layer1(B.detach().clone(), nn.Softshrink(self.lambd)))
+        self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), nn.Softshrink(self.lambd)))
 
         for i in range(self.num_layers):
             lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
