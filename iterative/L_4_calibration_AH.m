@@ -265,19 +265,19 @@ cvx_begin
 cvx_end
 Cx=max(abs(x'*FH* diag( fft(X(:,1)) )*F /norm(x,2)/norm(X(:,1)) ) );
 
-figure;
-for i=1:length(p_all)
-    plot(p_all,success_vec(i,:,2));
-    hold on
-end
+% figure;
+% for i=1:length(p_all)
+%     plot(p_all,success_vec(i,:,2));
+%     hold on
+% end
 
-
-figure;
-% phase_transition=flipud(reshape(success_vec(1,:,:),3,3))
-imagesc(p_all,theta_all,reshape(success_vec(1,:,:),3,3))
-colormap gray;
-set(gca,'YDir','normal') 
-% xlabel('n');
-xlabel('\kappa');
-% xlabel('\theta');
-ylabel('p');
+% 
+% figure;
+% % phase_transition=flipud(reshape(success_vec(1,:,:),3,3))
+% imagesc(p_all,theta_all,reshape(success_vec(1,:,:),3,3))
+% colormap gray;
+% set(gca,'YDir','normal') 
+% % xlabel('n');
+% xlabel('\kappa');
+% % xlabel('\theta');
+% ylabel('p');
