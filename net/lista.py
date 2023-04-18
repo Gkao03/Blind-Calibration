@@ -123,3 +123,13 @@ class LISTA(nn.Module):
 
     def forward(self, Y):
         return self.model(Y)
+
+
+class CustomLoss(nn.Module):
+    def __init__(self, A):
+        super(CustomLoss, self).__init__()
+        self.A = A
+
+    def forward(self, input):
+        X_hat, X = input
+        return torch.mean(torch.abs(X_hat - X) ** 2)
