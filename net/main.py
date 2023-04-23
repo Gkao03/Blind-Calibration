@@ -1,7 +1,7 @@
 from data import *
 from utils import get_device, plot_multiple, plot_single, plot_hist
 from config import Args
-from lista import LISTA
+from lista import LISTA, LISTAv2
 import os
 import torch
 import torch.nn as nn
@@ -151,26 +151,30 @@ if __name__ == "__main__":
     test_loader = get_lista_dataloader(diag_g, A, args.n, 512, args.theta, 1, collate_fn=collate_function)
     
     device = get_device()
-    model = LISTA(A, diag_g_init, args.lambd, args.num_layers)
+    # model = LISTA(A, diag_g_init, args.lambd, args.num_layers)
+    model = LISTAv2(A, diag_g_init, args.lambd, args.num_layers)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
 
+    # train v2
+    train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
+
     # evaluation
-    model.eval()
-    recon_losses = []
+    # model.eval()
+    # recon_losses = []
 
-    for batch_idx, (Y, X) in enumerate(test_loader):
-        Y = Y.to(device)
-        X = X.to(device)
+    # for batch_idx, (Y, X) in enumerate(test_loader):
+    #     Y = Y.to(device)
+    #     X = X.to(device)
 
-        out, _ = model(Y)
+    #     out, _ = model(Y)
 
-        recon_loss = criterion(out, X)
-        recon_losses.append(recon_loss.item())
+    #     recon_loss = criterion(out, X)
+    #     recon_losses.append(recon_loss.item())
 
-    # plot recon losses
-    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", savefile=os.path.join(args.out_dir, "test_recon_loss.png"))
+    # # plot recon losses
+    # plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", savefile=os.path.join(args.out_dir, "test_recon_loss.png"))
     
     # temp = []
     # for name, param in model.named_parameters():

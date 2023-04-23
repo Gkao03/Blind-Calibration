@@ -194,7 +194,7 @@ class LISTA_Layerv2(nn.Module):
 class LISTAv2(nn.Module):
     def __init__(self, A: np.ndarray, diag_h_init: np.ndarray, lambd, num_layers):
         super(LISTAv2, self).__init__()
-        self.A = torch.tensor(A, dtype=torch.float32)
+        self.A = A
         self.m, self.n = A.shape
         self.diag_h = diag_h_init
         self.lambd = lambd
@@ -212,21 +212,18 @@ class LISTAv2(nn.Module):
         # convert to tensors
         B = torch.tensor(B)
         S = torch.tensor(S)
+        diag_h = torch.tensor(self.diag_h)
 
         # initial layers
-        # self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), nn.Softshrink(self.lambd)))
         self.model.add_module('layer0', LISTA_Layer0v2(B.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd))))
         loss_layer = LossLayerv2(self.A)
-        self.model.add_module('recon_layer0', loss_layer)
-        self.loss_layers.append(loss_layer)
 
         for i in range(self.num_layers):
-            # lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
-            lista_layer = LISTA_Layer(S.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
+            lista_layer = LISTA_Layerv2(S.detach().clone(), diag_h.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
             self.model.add_module(f'layer{i + 1}', lista_layer)
 
             # add loss layer
-            loss_layer = LossLayerv2(self.A)
+            loss_layer = LossLayerv2(torch.tensor(self.A))
             self.model.add_module(f'loss_layer{i + 1}', loss_layer)
             self.loss_layers.append(loss_layer)
     
