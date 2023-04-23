@@ -51,6 +51,46 @@ def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, dev
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
 
 
+def train_intermediate(args, model, train_loader, optimizer, scheduler, criterion, device):
+    model = model.to(device)
+    model.train()
+
+    for epoch in range(args.epochs):
+        print(f"epoch {epoch + 1}/{args.epochs}")
+
+        for batch_idx, (Y, X) in enumerate(train_loader):
+            # send to device
+            Y = Y.to(device)
+            X = X.to(device)
+
+            # zero gradients
+            optimizer.zero_grad()
+
+            # get model output
+            out, _ = model(Y)
+
+            # get recons
+            recon_layers = model.get_recons()
+            loss = 0
+
+            # calculate loss
+            for recon_layer in recon_layers:
+                loss += criterion(recon_layer.get_recon(), X)
+
+            losses.append(loss.item() / args.num_layers)
+
+            # back prop
+            loss.backward()
+            optimizer.step()
+
+        scheduler.step()
+
+    # save model
+    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+
+    # plot losses
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+
 if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
