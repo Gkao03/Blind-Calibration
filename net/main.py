@@ -8,6 +8,49 @@ import torch.nn as nn
 import torch.optim as optim
 
 
+def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, device):
+    model = model.to(device)
+    model.train()
+
+    for layer_num in range(args.num_layers + 1):
+
+        for iter in range(args.epochs_per_layer):
+            print(f"iteration {iter + 1}/{args.epochs_per_layer}")
+
+            for batch_idx, (Y, X) in enumerate(train_loader):
+                # send to device
+                Y = Y.to(device)
+                X = X.to(device)
+
+                # zero gradients
+                optimizer.zero_grad()
+
+                # get model output
+                out, _ = model(Y)
+
+                # calculate loss
+                loss = criterion(out, X)
+                losses.append(loss.item())
+
+                # back prop
+                loss.backward()
+                optimizer.step()
+
+        scheduler.step()
+
+        # freeze layer after training loop
+        print(f"freezing layer {layer_num}")
+        for name, param in model.named_parameters():
+            if param.requires_grad and f'layer{layer_num}' in name:
+                param.requires_grad = False
+
+    # save model
+    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+
+    # plot losses
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+
+
 if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
@@ -24,51 +67,11 @@ if __name__ == "__main__":
     test_loader = get_lista_dataloader(diag_g, A, args.n, 512, args.theta, 1, collate_fn=collate_function)
     
     device = get_device()
-    model = LISTA(A, diag_g_init, args.lambd, args.num_layers).to(device)
+    model = LISTA(A, diag_g_init, args.lambd, args.num_layers)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
     losses = []
-    model.train()  # training mode
-
-    # for layer_num in range(args.num_layers + 1):
-
-    #     for iter in range(args.epochs_per_layer):
-    #         print(f"iteration {iter + 1}/{args.epochs_per_layer}")
-
-    #         for batch_idx, (Y, X) in enumerate(train_loader):
-    #             # send to device
-    #             Y = Y.to(device)
-    #             X = X.to(device)
-
-    #             # zero gradients
-    #             optimizer.zero_grad()
-
-    #             # get model output
-    #             out, _ = model(Y)
-
-    #             # calculate loss
-    #             loss = criterion(out, X)
-    #             losses.append(loss.item())
-
-    #             # back prop
-    #             loss.backward()
-    #             optimizer.step()
-
-    #     scheduler.step()
-
-    #     # freeze layer after training loop
-    #     print(f"freezing layer {layer_num}")
-    #     for name, param in model.named_parameters():
-    #         if param.requires_grad and f'layer{layer_num}' in name:
-    #             param.requires_grad = False
-
-    # # save model
-    # torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
-
-    # # plot losses
-    # plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
-
 
     # training with intermediate recon layers
     for epoch in range(args.epochs):
