@@ -1,3 +1,6 @@
+import os
+
+
 class Args:
     def __init__(self):
         self.m = 64
@@ -11,5 +14,6 @@ class Args:
         self.random_seed = 2023
         self.epochs = 10
         self.epochs_per_layer = 10
-        self.save_dir = "./out"
+        self.save_dir = "out/"
         self.exp_num = 1
+        self.out_dir = os.path.join(self.save_dir, f"exp{self.exp_num}")
