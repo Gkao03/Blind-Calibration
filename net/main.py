@@ -11,6 +11,7 @@ import torch.optim as optim
 def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, device):
     model = model.to(device)
     model.train()
+    losses = []
 
     for layer_num in range(args.num_layers + 1):
 
@@ -54,6 +55,7 @@ def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, dev
 def train_intermediate(args, model, train_loader, optimizer, scheduler, criterion, device):
     model = model.to(device)
     model.train()
+    losses = []
 
     for epoch in range(args.epochs):
         print(f"epoch {epoch + 1}/{args.epochs}")
@@ -95,6 +97,7 @@ def train_intermediate(args, model, train_loader, optimizer, scheduler, criterio
 def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device):
     model = model.to(device)
     model.train()
+    losses = []
 
     for epoch in range(args.epochs):
         print(f"epoch {epoch + 1}/{args.epochs}")
@@ -152,7 +155,6 @@ if __name__ == "__main__":
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
-    losses = []
 
     # evaluation
     model.eval()
