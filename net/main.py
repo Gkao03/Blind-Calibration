@@ -48,7 +48,7 @@ def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, dev
     torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
-    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(args.out_dir, "loss.png"))
 
 
 def train_intermediate(args, model, train_loader, optimizer, scheduler, criterion, device):
@@ -89,7 +89,7 @@ def train_intermediate(args, model, train_loader, optimizer, scheduler, criterio
     torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
-    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(args.out_dir, "loss.png"))
 
 
 def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device):
@@ -130,7 +130,7 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
     torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
-    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(args.out_dir, "loss.png"))
 
 
 if __name__ == "__main__":
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         recon_losses.append(recon_loss.item())
 
     # plot recon losses
-    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", savefile=os.path.join(out_dir, "test_recon_loss.png"))
+    plot_hist(recon_losses, title="Test Data Reconstruction L1 Error", xlabel="L1 Error", ylabel="Density", savefile=os.path.join(args.out_dir, "test_recon_loss.png"))
     
     # temp = []
     # for name, param in model.named_parameters():
