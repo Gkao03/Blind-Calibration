@@ -121,7 +121,8 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
                 est1, est2 = loss_layer.get_estimates()
                 loss += criterion(est1, est2)
 
-            losses.append(loss.item() / args.num_layers)
+            loss = loss / len(loss_layers)
+            losses.append(loss)
 
             # back prop
             loss.backward()
