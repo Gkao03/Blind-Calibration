@@ -93,7 +93,45 @@ def train_intermediate(args, model, train_loader, optimizer, scheduler, criterio
 
 
 def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device):
-    pass
+    model = model.to(device)
+    model.train()
+
+    for epoch in range(args.epochs):
+        print(f"epoch {epoch + 1}/{args.epochs}")
+
+        for batch_idx, (Y, _) in enumerate(train_loader):
+            # send to device
+            Y = Y.to(device)
+
+            # zero gradients
+            optimizer.zero_grad()
+
+            # get model output
+            _ = model(Y)
+
+            # get recons
+            loss_layers = model.get_loss_layers()
+            loss = 0
+
+            # calculate loss
+            for loss_layer in loss_layers:
+                est1, est2 = loss_layer.get_estimates()
+                loss += criterion(loss_layer.get_estimates())
+
+            losses.append(loss.item() / args.num_layers)
+
+            # back prop
+            loss.backward()
+            optimizer.step()
+
+        scheduler.step()
+
+    # save model
+    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+
+    # plot losses
+    plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
+
 
 if __name__ == "__main__":
     args = Args()
