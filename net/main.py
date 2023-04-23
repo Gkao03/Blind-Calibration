@@ -45,7 +45,7 @@ def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, dev
                 param.requires_grad = False
 
     # save model
-    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+    torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
@@ -86,7 +86,7 @@ def train_intermediate(args, model, train_loader, optimizer, scheduler, criterio
         scheduler.step()
 
     # save model
-    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+    torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
@@ -127,7 +127,7 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
         scheduler.step()
 
     # save model
-    torch.save(model.state_dict(), os.path.join(out_dir, "model.pt"))
+    torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(out_dir, "loss.png"))
@@ -138,9 +138,8 @@ if __name__ == "__main__":
     np.random.seed(args.random_seed)
 
     # output dir
-    out_dir = os.path.join(args.save_dir, f"exp{args.exp_num}")
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if not os.path.exists(args.out_dir):
+        os.makedirs(args.out_dir)
 
     diag_g = generate_diag_g(args.m, np.random.uniform(0, 50))
     diag_g_init = generate_diag_g(args.m, np.random.uniform(0, 50))
