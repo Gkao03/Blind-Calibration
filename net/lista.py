@@ -154,7 +154,7 @@ class LossLayerv2(nn.Module):
 
 class LISTA_Layer0v2(nn.Module):
     def __init__(self, B, shrink):
-        super(LISTA_Layer0, self).__init__()
+        super(LISTA_Layer0v2, self).__init__()
         self.B = nn.Parameter(B)
         self.shrink = shrink
 
@@ -172,7 +172,7 @@ class LISTA_Layer0v2(nn.Module):
 
 class LISTA_Layerv2(nn.Module):
     def __init__(self, S, diag_h, shrink):
-        super(LISTA_Layer, self).__init__()
+        super(LISTA_Layerv2, self).__init__()
         self.S = nn.Parameter(S)
         self.diag_h = nn.Parameter(diag_h)
         self.shrink = shrink
@@ -193,7 +193,7 @@ class LISTA_Layerv2(nn.Module):
 
 class LISTAv2(nn.Module):
     def __init__(self, A: np.ndarray, diag_h_init: np.ndarray, lambd, num_layers):
-        super(LISTA, self).__init__()
+        super(LISTAv2, self).__init__()
         self.A = torch.tensor(A, dtype=torch.float32)
         self.m, self.n = A.shape
         self.diag_h = diag_h_init
