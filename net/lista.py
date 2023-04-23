@@ -216,9 +216,9 @@ class LISTAv2(nn.Module):
         # initial layers
         # self.model.add_module('layer0', LISTA_Layer0(B.detach().clone(), nn.Softshrink(self.lambd)))
         self.model.add_module('layer0', LISTA_Layer0v2(B.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd))))
-        recon_layer = ReconLayer()
-        self.model.add_module('recon_layer0', recon_layer)
-        self.recon_layers.append(recon_layer)
+        loss_layer = LossLayerv2(self.A)
+        self.model.add_module('recon_layer0', loss_layer)
+        self.loss_layers.append(loss_layer)
 
         for i in range(self.num_layers):
             # lista_layer = LISTA_Layer(S.detach().clone(), nn.Softshrink(self.lambd))
