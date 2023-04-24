@@ -204,6 +204,7 @@ class LISTAv2(nn.Module):
         self.num_layers = num_layers
 
         # build on init
+        self.lista_layers = []
         self.loss_layers = []  # may or may not be used depending on version
         self.model = nn.Sequential()
         self.build_model_v1()
@@ -224,11 +225,15 @@ class LISTAv2(nn.Module):
         for i in range(self.num_layers):
             lista_layer = LISTA_Layerv2(S.detach().clone(), diag_h.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
             self.model.add_module(f'layer{i + 1}', lista_layer)
+            self.lista_layers.append(lista_layer)
 
             # add loss layer
             loss_layer = LossLayerv2(torch.tensor(self.A))
             self.model.add_module(f'loss_layer{i + 1}', loss_layer)
             self.loss_layers.append(loss_layer)
+
+    def get_lista_layers(self):
+        return self.lista_layers
     
     def get_loss_layers(self):
         return self.loss_layers

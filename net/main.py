@@ -97,10 +97,12 @@ def train_intermediate(args, model, train_loader, optimizer, scheduler, criterio
 def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device):
     model = model.to(device)
     model.train()
+    all_diag_h = []
     losses = []
 
     for epoch in range(args.epochs):
         print(f"epoch {epoch + 1}/{args.epochs}")
+        diag_hs = []
 
         for batch_idx, (Y, _) in enumerate(train_loader):
             # send to device
@@ -130,11 +132,19 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
 
         scheduler.step()
 
+        lista_layers = model.get_lista_layers()
+        for lista_layer in lista_layers:
+            diag_hs.append(lista_layer.get_diag_h().numpy())
+
+        all_diag_h.append(diag_hs)
+
     # save model
     torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pt"))
 
     # plot losses
     plot_single(np.arange(len(losses)), losses, "Training Loss", "Iteration", "Loss", os.path.join(args.out_dir, "loss.png"))
+
+    return all_diag_h
 
 
 if __name__ == "__main__":
@@ -159,7 +169,7 @@ if __name__ == "__main__":
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)
 
     # train v2
-    train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
+    all_diag_h = train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
 
     # evaluation
     # model.eval()
