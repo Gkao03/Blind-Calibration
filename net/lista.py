@@ -177,6 +177,9 @@ class LISTA_Layerv2(nn.Module):
         self.diag_h = nn.Parameter(diag_h)
         self.shrink = shrink
 
+    def get_diag_h(self):
+        return self.diag_h.detach().clone()
+
     def forward(self, input):
         X_in, By, Y = input
 
