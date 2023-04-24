@@ -122,7 +122,7 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
                 loss += criterion(est1, est2)
 
             loss = loss / len(loss_layers)
-            losses.append(loss)
+            losses.append(loss.item())
 
             # back prop
             loss.backward()
