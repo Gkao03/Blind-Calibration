@@ -2,6 +2,7 @@ from data import *
 from utils import get_device, plot_multiple, plot_single, plot_hist
 from config import Args
 from lista import LISTA, LISTAv2
+from sklearn.metrics import mean_squared_error
 import os
 import torch
 import torch.nn as nn
@@ -147,6 +148,28 @@ def train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
     return all_diag_h
 
 
+def eval_v2(args, all_diag_h, diag_g_gt):
+    identity = np.identity(diag_g_gt.shape[0])
+    avg_mses = []
+
+    for diag_hs in all_diag_h:
+        curr_mses = []
+
+        for diag_h in diag_hs:
+            pred = diag_h @ diag_g_gt
+            pred_real = pred.real
+            pred_imag = pred.imag
+            mse = mean_squared_error(identity, pred_real) + mean_squared_error(np.zeros_like(identity), pred_imag)
+            curr_mses.append(mse)
+
+        avg_mses.append(np.mean(curr_mses))
+
+    avg_mse = np.mean(avg_mses)
+    print(f"average MSE: {avg_mse}")
+
+    plot_single(np.arange(len(avg_mses)), avg_mses, "Average MSE", "Iteration", "MSE", os.path.join(args.out_dir, "mse.png"))
+
+
 if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
@@ -170,6 +193,9 @@ if __name__ == "__main__":
 
     # train v2
     all_diag_h = train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
+
+    # eval v2
+    eval_v2(args, all_diag_h, diag_g)
 
     # evaluation
     # model.eval()
