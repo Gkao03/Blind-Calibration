@@ -7,6 +7,8 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import numpy as np
+import numpy.linalg as la
 
 
 def train_freeze(args, model, train_loader, optimizer, scheduler, criterion, device):
