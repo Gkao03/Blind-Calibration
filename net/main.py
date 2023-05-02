@@ -180,7 +180,7 @@ def eval_v3(args, all_diag_h, diag_g_gt, A):
     results = []
     
     for diag_h in diag_hs:
-        hcols = np.hsplit(diag_h, diag_h.shape[1])
+        hcols = np.hsplit(diag_h @ A, diag_h.shape[1])
         hcols = [np.squeeze(hcol) for hcol in hcols]  # remove extra dim (squeeze)
         dots = [np.abs(np.dot((1 / h) / la.norm(1 / h, ord=2), norm_g)) for h in hcols]
         res = np.max(dots)
