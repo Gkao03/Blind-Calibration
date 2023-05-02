@@ -220,11 +220,13 @@ class LISTAv2(nn.Module):
         diag_h = torch.tensor(self.diag_h)
 
         # initial layers
-        self.model.add_module('layer0', LISTA_Layer0v2(B.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd))))
+        self.model.add_module('layer0', LISTA_Layer0v2(B.detach().clone(), nn.Softshrink(self.lambd)))
+        # self.model.add_module('layer0', LISTA_Layer0v2(B.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd))))
         loss_layer = LossLayerv2(self.A)
 
         for i in range(self.num_layers):
-            lista_layer = LISTA_Layerv2(S.detach().clone(), diag_h.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
+            lista_layer = LISTA_Layerv2(S.detach().clone(), diag_h.detach().clone(), nn.Softshrink(self.lambd))
+            # lista_layer = LISTA_Layerv2(S.detach().clone(), diag_h.detach().clone(), SoftThreshold(torch.full((self.n, 1), self.lambd)))
             self.model.add_module(f'layer{i + 1}', lista_layer)
             self.lista_layers.append(lista_layer)
 
