@@ -172,6 +172,23 @@ def eval_v2(args, all_diag_h, diag_g_gt):
     plot_single(np.arange(len(avg_mses)), avg_mses, "Average MSE", "Iteration", "MSE", os.path.join(args.out_dir, "mse.png"))
 
 
+def eval_v3(args, all_diag_h, diag_g_gt, A):
+    g = np.diag(diag_g_gt)
+    norm_g = la.norm(g, ord=2)
+
+    diag_hs = all_diag_h[-1]
+    results = []
+    
+    for diag_h in diag_hs:
+        hcols = np.hsplit(diag_h, diag_h.shape[1])
+        dots = [np.dot((1 / h) / la.norm(1 / h), norm_g) for h in hcols]
+        res = np.max(dots)
+
+        results.append(res)
+
+    plot_single(np.arange(len(results)), results, "Max Recovery Calibration", "Layer Depth", "normalized 1 / h dot g", os.path.join(args.out_dir, "recovery.png"))
+
+
 if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
@@ -198,7 +215,10 @@ if __name__ == "__main__":
     all_diag_h = train_v2(args, model, train_loader, optimizer, scheduler, criterion, device)
 
     # eval v2
-    eval_v2(args, all_diag_h, diag_g)
+    # eval_v2(args, all_diag_h, diag_g)
+
+    # eval v3
+    eval_v3(args, all_diag_h, diag_g, A)
 
     # evaluation
     # model.eval()
