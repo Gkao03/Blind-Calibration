@@ -191,6 +191,24 @@ def eval_v3(args, all_diag_h, diag_g_gt, A):
     plot_single(np.arange(len(results)), results, "Max Recovery Calibration", "Layer Depth", "normalized 1 / h dot g", os.path.join(args.out_dir, "recovery.png"))
 
 
+def eval_v4(args, all_diag_h, diag_g_gt, A):  # try chain multiply all layer diag_hs
+    g = np.diag(diag_g_gt)
+    norm_g = g / la.norm(g, ord=2)
+
+    results = []
+    
+    for diag_hs in all_diag_h:
+        out = la.multi_dot(diag_hs) @ A
+
+        hcols = np.hsplit(out, out.shape[1])
+        hcols = [np.squeeze(hcol) for hcol in hcols]  # remove extra dim (squeeze)
+        dots = [np.abs(np.dot((1 / h) / la.norm(1 / h, ord=2), norm_g)) for h in hcols]
+        res = np.max(dots)
+        results.append(res)
+
+    plot_single(np.arange(len(results)), results, "Max Recovery Calibration", "Iteration", "normalized 1 / h dot g", os.path.join(args.out_dir, "recovery.png"))
+
+
 if __name__ == "__main__":
     args = Args()
     np.random.seed(args.random_seed)
@@ -220,7 +238,10 @@ if __name__ == "__main__":
     # eval_v2(args, all_diag_h, diag_g)
 
     # eval v3
-    eval_v3(args, all_diag_h, diag_g, A)
+    # eval_v3(args, all_diag_h, diag_g, A)
+
+    # eval v4
+    eval_v4(args, all_diag_h, diag_g, A)
 
     # evaluation
     # model.eval()
