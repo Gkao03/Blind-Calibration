@@ -174,14 +174,15 @@ def eval_v2(args, all_diag_h, diag_g_gt):
 
 def eval_v3(args, all_diag_h, diag_g_gt, A):
     g = np.diag(diag_g_gt)
-    norm_g = la.norm(g, ord=2)
+    norm_g = g / la.norm(g, ord=2)
 
     diag_hs = all_diag_h[-1]
     results = []
     
     for diag_h in diag_hs:
         hcols = np.hsplit(diag_h, diag_h.shape[1])
-        dots = [np.dot((1 / h) / la.norm(1 / h), norm_g) for h in hcols]
+        hcols = [np.squeeze(hcol) for hcol in hcols]  # remove extra dim (squeeze)
+        dots = [np.abs(np.dot((1 / h) / la.norm(1 / h, ord=2), norm_g)) for h in hcols]
         res = np.max(dots)
 
         results.append(res)
