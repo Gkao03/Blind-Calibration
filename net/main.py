@@ -217,8 +217,8 @@ if __name__ == "__main__":
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
 
-    diag_g = generate_diag_g(args.m, np.random.uniform(0, 50))
-    diag_g_init = generate_diag_g(args.m, np.random.uniform(0, 50))
+    diag_g = generate_diag_g(args.m, np.random.uniform(0, 10))
+    diag_g_init = generate_diag_g(args.m, np.random.uniform(0, 10))
     diag_h_init = diag_g_init
     A = generate_A(args.m, args.n)
     train_loader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
