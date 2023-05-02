@@ -195,13 +195,14 @@ class LISTA_Layerv2(nn.Module):
 
 
 class LISTAv2(nn.Module):
-    def __init__(self, A: np.ndarray, diag_h_init: np.ndarray, lambd, num_layers):
+    def __init__(self, A: np.ndarray, diag_h_init: np.ndarray, lambd, num_layers, kappa):
         super(LISTAv2, self).__init__()
         self.A = A
         self.m, self.n = A.shape
         self.diag_h = diag_h_init
         self.lambd = lambd
         self.num_layers = num_layers
+        self.kappa = kappa
 
         # build on init
         self.lista_layers = []
@@ -210,8 +211,8 @@ class LISTAv2(nn.Module):
         self.build_model_v1()
 
     def build_model_v1(self):
-        B = (self.diag_h @ self.A).T / (1.01 * la.norm(self.diag_h @ self.A, 2) ** 2)
-        S = np.identity(self.n) - np.matmul(B, self.A)
+        B = (self.diag_h @ self.A).T 
+        S = self.kappa * np.identity(self.n) - np.matmul(B, self.A)
 
         # convert to tensors
         B = torch.tensor(B)

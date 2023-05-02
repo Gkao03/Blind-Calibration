@@ -217,8 +217,12 @@ if __name__ == "__main__":
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
 
-    diag_g = generate_diag_g(args.m, np.random.uniform(0, 10))
-    diag_g_init = generate_diag_g(args.m, np.random.uniform(0, 10))
+    kappa1 = np.random.uniform(0, 50)  # used for gt
+    kappa2 = np.random.uniform(0, 50)  # used for init
+    print(f"kappa 1: {kappa1} , kappa 2: {kappa2}")
+
+    diag_g = generate_diag_g(args.m, kappa1)
+    diag_g_init = generate_diag_g(args.m, kappa2)
     diag_h_init = diag_g_init
     A = generate_A(args.m, args.n)
     train_loader = get_lista_dataloader(diag_g, A, args.n, args.p, args.theta, args.batch_size, collate_fn=collate_function)
@@ -226,7 +230,7 @@ if __name__ == "__main__":
     
     device = get_device()
     # model = LISTA(A, diag_g_init, args.lambd, args.num_layers)
-    model = LISTAv2(A, diag_h_init, args.lambd, args.num_layers)
+    model = LISTAv2(A, diag_h_init, args.lambd, args.num_layers, kappa2)
     criterion = nn.L1Loss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.5, verbose=True)

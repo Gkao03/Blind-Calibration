@@ -15,5 +15,5 @@ class Args:
         self.epochs = 30
         self.epochs_per_layer = 10
         self.save_dir = "out/"
-        self.exp_num = 8
+        self.exp_num = 9
         self.out_dir = os.path.join(self.save_dir, f"exp{self.exp_num}")
