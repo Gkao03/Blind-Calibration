@@ -206,7 +206,7 @@ def eval_v4(args, all_diag_h, diag_g_gt, A):  # try chain multiply all layer dia
         res = np.max(dots)
         results.append(res)
 
-    plot_single(np.arange(len(results)), results, "Max Recovery Calibration", "Iteration", "normalized 1 / h dot g", os.path.join(args.out_dir, "recovery.png"))
+    plot_single(np.arange(len(results)), results, "Max Recovery Calibration", "Epoch", "normalized 1 / h dot g", os.path.join(args.out_dir, "recovery.png"))
 
 
 if __name__ == "__main__":
